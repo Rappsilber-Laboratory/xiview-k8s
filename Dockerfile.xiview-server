@@ -31,7 +31,7 @@ COPY xiview-server/templates ./templates
 
 # Re-route the hardcoded EBI PRIDE endpoints to our self-hosted proxy natively without modifying the submodules!
 RUN sed -i 's|https://www.ebi.ac.uk/pride/ws/archive/crosslinking/v3/data/|/pride/ws/archive/crosslinking/v3/data/|g' ./static/network.html ./static/spectra.html
-RUN sed -i 's|"xiAnnotator/"|"/pride/ws/archive/crosslinking/v3/data/"|g' ./static/network.html ./static/spectra.html
+RUN sed -i 's|"xiAnnotator/"|""|g' ./static/network.html ./static/spectra.html
 RUN mv ./static/pride.css ./static/xiview-pride.css
 RUN sed -i 's|pride.css|xiview-pride.css|g' ./static/network.html ./static/spectra.html
 COPY xiview-server/tests ./tests
