@@ -6,7 +6,7 @@ metadata:
 data:
   config.ini: |
     [postgresql]
-    host=localhost
+    host=postgresql-service
     database=crosslinking
     user=xiadmin
     password=your_password_here
@@ -19,7 +19,7 @@ data:
     xiviewbaseurl=https://xiview.org/pride
 
     [redis]
-    host=localhost
+    host=redis-service
     port=6379
     password=your_redis_password
     peptide_per_protein=peptide_per_protein_cache
