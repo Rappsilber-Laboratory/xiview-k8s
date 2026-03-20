@@ -1,4 +1,4 @@
-FROM python:3.10-slim as base
+FROM python:3.10 as base
 
 ENV LANG C.UTF-8
 ENV LC_ALL C.UTF-8
@@ -7,7 +7,6 @@ ENV PYTHONFAULTHANDLER 1
 ENV PYTHONUNBUFFERED 1
 
 RUN python3 -m pip install wheel pip --upgrade && pip install pipenv
-RUN apt-get update && apt-get install -y --no-install-recommends build-essential && rm -rf /var/lib/apt/lists/*
 
 COPY mzidentml-reader/Pipfile .
 COPY mzidentml-reader/Pipfile.lock .
@@ -19,15 +18,15 @@ USER appuser
 RUN mkdir -p /home/appuser/mzId_convertor_temp
 RUN mkdir -p /home/appuser/logs
 
-COPY mzidentml-reader/app ./app
-COPY mzidentml-reader/dbs ./dbs
+COPY mzidentml-reader/config ./config
+COPY mzidentml-reader/models ./models
+COPY mzidentml-reader/mzidentml_data_exclusions ./mzidentml_data_exclusions
 COPY mzidentml-reader/obo ./obo
 COPY mzidentml-reader/parser ./parser
-COPY mzidentml-reader/tests ./tests
+COPY mzidentml-reader/schema ./schema
 COPY mzidentml-reader/scripts ./scripts
+COPY mzidentml-reader/tests ./tests
 COPY mzidentml-reader/*.py .
-COPY mzidentml-reader/default.database.ini ./database.ini
-COPY mzidentml-reader/config/logging.ini ./config/logging.ini
 
 ENTRYPOINT ["python", "-m", "parser"]
 CMD ["-h"]
