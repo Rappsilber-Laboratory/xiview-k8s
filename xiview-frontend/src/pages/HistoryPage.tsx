@@ -13,9 +13,7 @@ export default function HistoryPage() {
       setDatasets(data.map((d: any) => ({
         id: d.project_id,
         name: d.identification_file_name,
-        date: d.upload_date || 'Unknown', 
         status: 'success',
-        size: d.size_matches || 'N/A',
       })));
     } catch (e) {
       console.error(e);
@@ -67,23 +65,19 @@ export default function HistoryPage() {
               <tr>
                 <th>Project ID</th>
                 <th>Dataset Name</th>
-                <th>Upload Date</th>
-                <th>Size</th>
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={6} style={{textAlign: 'center', padding: '2rem'}}>Loading...</td></tr>
+                <tr><td colSpan={4} style={{textAlign: 'center', padding: '2rem'}}>Loading...</td></tr>
               ) : datasets.length === 0 ? (
-                <tr><td colSpan={6} style={{textAlign: 'center', padding: '2rem'}}>No datasets found.</td></tr>
+                <tr><td colSpan={4} style={{textAlign: 'center', padding: '2rem'}}>No datasets found.</td></tr>
               ) : datasets.map((ds, index) => (
                 <tr key={`${ds.id}-${index}`}>
                   <td style={{ fontWeight: '500', color: 'var(--text-primary)' }}>{ds.id}</td>
                   <td>{ds.name}</td>
-                  <td style={{ color: 'var(--text-secondary)' }}>{ds.date}</td>
-                  <td style={{ color: 'var(--text-secondary)' }}>{ds.size}</td>
                   <td>
                     <span className={`status-badge ${ds.status}`}>
                       {ds.status === 'success' && 'Ready / xiVIEW'}
