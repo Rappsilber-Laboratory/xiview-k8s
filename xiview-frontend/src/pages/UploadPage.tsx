@@ -49,12 +49,13 @@ export default function UploadPage() {
           <Upload className="upload-icon" />
           <h3 style={{ marginBottom: '0.5rem' }}>Select or drop files here</h3>
           <p style={{ color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>
-            Supports .mzid, .mzML, .mgf, .csv, and .fasta
+            Support for identification (.mzid, .csv) and peaklists (.mzML, .mgf).
           </p>
           <input 
             type="file" 
             id="file-upload" 
             multiple 
+            accept=".mzid,.csv,.mzML,.mgf,.ms2,.zip"
             style={{ display: 'none' }}
             onChange={(e) => {
               if (e.target.files && e.target.files.length > 0) {
