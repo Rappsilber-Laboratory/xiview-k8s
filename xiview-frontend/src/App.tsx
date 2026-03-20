@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { LayoutDashboard, UploadCloud, LogOut, Database, PlayCircle } from 'lucide-react';
+import { LayoutDashboard, UploadCloud, Database, PlayCircle } from 'lucide-react';
 import UploadPage from './pages/UploadPage';
 import HistoryPage from './pages/HistoryPage';
 
@@ -38,10 +38,6 @@ function App() {
           <div className="nav-link">
             <PlayCircle size={20} />
             <span>Demo</span>
-          </div>
-          <div className="nav-link" style={{ marginTop: 'auto' }}>
-            <LogOut size={20} />
-            <span>Sign Out</span>
           </div>
         </nav>
         

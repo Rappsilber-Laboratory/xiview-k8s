@@ -1,0 +1,37 @@
+FROM python:3.10
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential libxml2-utils \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN useradd --create-home appuser
+WORKDIR /home/appuser
+
+# Install mzidentml-reader
+COPY mzidentml-reader/Pipfile .
+COPY mzidentml-reader/Pipfile.lock .
+RUN pip install pipenv setuptools wheel
+RUN pipenv requirements > /tmp/requirements.txt
+RUN pip install -r /tmp/requirements.txt
+
+# Additional web dependencies for the microservice
+RUN pip install fastapi uvicorn python-multipart
+
+# Copy the mzidentml-reader parser logic organically (so it acts as a library)
+COPY mzidentml-reader/parser/ ./parser/
+COPY mzidentml-reader/config/ ./config/
+COPY mzidentml-reader/models/ ./models/
+COPY mzidentml-reader/schema/ ./schema/
+COPY mzidentml-reader/*.py ./
+
+# Apply our custom upload-api logic over it
+COPY xiview-upload-api/main.py .
+
+# Standard configs supplied via Kubernetes config map during runtime instead
+
+# Fix permissions
+RUN chown -R appuser:appuser /home/appuser
+USER appuser
+
+EXPOSE 8090
+CMD ["python", "main.py"]

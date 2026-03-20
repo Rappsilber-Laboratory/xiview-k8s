@@ -1,8 +1,39 @@
 import { useState } from 'react';
-import { Upload, FileText, File, AlertCircle } from 'lucide-react';
+import { Upload, File, AlertCircle } from 'lucide-react';
 
 export default function UploadPage() {
-  const [file, setFile] = useState<globalThis.File | null>(null);
+  const [files, setFiles] = useState<globalThis.File[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
+  const [isComplete, setIsComplete] = useState(false);
+
+  const handleUpload = async () => {
+    if (files.length === 0) return;
+    setIsUploading(true);
+    
+    const formData = new FormData();
+    files.forEach((f) => formData.append('files', f));
+
+    try {
+      const response = await fetch('/pride/ws/archive/crosslinking/v3/upload_local', {
+        method: 'POST',
+        headers: {
+          'X-API-Key': 'your_api_key'
+        },
+        body: formData
+      });
+
+      if (response.ok) {
+        setIsComplete(true);
+        setFiles([]); // Clear after upload
+      } else {
+        console.error('Upload failed:', await response.text());
+      }
+    } catch (e) {
+      console.error('Upload Error:', e);
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   return (
     <div className="animate-in">
@@ -27,7 +58,8 @@ export default function UploadPage() {
             style={{ display: 'none' }}
             onChange={(e) => {
               if (e.target.files && e.target.files.length > 0) {
-                setFile(e.target.files[0]);
+                setFiles(Array.from(e.target.files));
+                setIsComplete(false); // Reset completion status for new file
               }
             }}
           />
@@ -42,35 +74,58 @@ export default function UploadPage() {
 
         {/* Selected files feedback */}
         <div className="file-list">
-          <div className="file-item">
-            <div className="file-info">
-              <File className="file-icon" />
-              <div className="file-details">
-                <h4>Identification File</h4>
-                <p>{file ? file.name : 'No file selected — Select a mzIdentML or CSV.'}</p>
+          {files.map((file, idx) => (
+             <div className="file-item" key={idx}>
+               <div className="file-info">
+                 <File className="file-icon" />
+                 <div className="file-details">
+                   <h4>File {idx + 1}</h4>
+                   <p>{file.name}</p>
+                 </div>
+               </div>
+               <span className="status-badge success">Ready</span>
+             </div>
+          ))}
+          
+          {files.length === 0 && !isComplete && (
+            <div className="file-item">
+              <div className="file-info">
+                <File className="file-icon" />
+                <div className="file-details">
+                  <h4>Identification File</h4>
+                  <p>No file selected — Select mzIdentML and peaklists.</p>
+                </div>
               </div>
             </div>
-            {file && <span className="status-badge success">Ready</span>}
-          </div>
-          <div className="file-item">
-            <div className="file-info">
-              <FileText className="file-icon" />
-              <div className="file-details">
-                <h4>Peak List File(s)</h4>
-                <p>No peak list selected — spectra will refer to database records.</p>
+          )}
+
+          {isComplete && (
+            <div className="file-item" style={{ background: 'rgba(16, 185, 129, 0.1)', borderColor: 'rgba(16, 185, 129, 0.2)'}}>
+              <div className="file-info">
+                <File className="file-icon" color="var(--success-color)" />
+                <div className="file-details">
+                  <h4 style={{ color: 'var(--success-color)' }}>Parsing Submitted Successfully</h4>
+                  <p>Check the "My Data" tab to view your parsed dataset once the server finishes indexing.</p>
+                </div>
               </div>
             </div>
-          </div>
+          )}
+
         </div>
 
-        <button className="upload-btn" disabled={!file} style={{ alignSelf: 'flex-end' }}>
-          Begin Parsing <Upload size={18} />
+        <button 
+          className="upload-btn" 
+          disabled={files.length === 0 || isUploading} 
+          onClick={handleUpload}
+          style={{ alignSelf: 'flex-end', opacity: (files.length === 0 || isUploading) ? 0.6 : 1 }}
+        >
+          {isUploading ? 'Parsing...' : 'Begin Parsing'} <Upload size={18} />
         </button>
 
       </div>
 
       {/* Info Sections */}
-      <div className="glass-panel info-section">
+      <div className="glass-panel info-section" style={{ marginTop: '2rem' }}>
         <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <AlertCircle size={20} color="var(--accent-color)" />
           How to submit a crosslinking dataset

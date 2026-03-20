@@ -28,7 +28,11 @@ USER appuser
 RUN mkdir -p /home/appuser/logs
 
 COPY xiview-server/static ./static
-COPY xiview-server/templates ./templates
+COPY xiview-server/templates/ /usr/share/nginx/html/
+
+# Re-route the hardcoded EBI PRIDE endpoints to our self-hosted proxy natively without modifying the submodules!
+RUN sed -i 's|https://www.ebi.ac.uk/pride/ws/archive/crosslinking/v3/data/|/pride/ws/archive/crosslinking/v3/data/|g' /usr/share/nginx/html/network.html /usr/share/nginx/html/spectra.html
+RUN sed -i 's|"xiAnnotator/"|"/pride/ws/archive/crosslinking/v3/data/"|g' /usr/share/nginx/html/network.html /usr/share/nginx/html/spectra.html
 COPY xiview-server/tests ./tests
 COPY xiview-server/xiview_server ./xiview_server
 COPY xiview-server/.env .
