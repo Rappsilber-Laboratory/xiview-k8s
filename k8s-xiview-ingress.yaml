@@ -75,6 +75,13 @@ spec:
                 name: xiview-server-service
                 port:
                   number: 80
+          - path: /R
+            pathType: Prefix
+            backend:
+              service:
+                name: xiview-server-service
+                port:
+                  number: 80
           - path: /docs
             pathType: Prefix
             backend:
