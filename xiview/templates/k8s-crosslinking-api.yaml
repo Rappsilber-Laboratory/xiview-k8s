@@ -1,0 +1,73 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: crosslinking-api-config
+data:
+  config.ini: |
+    [postgresql]
+    host=postgresql-service
+    database=crosslinking
+    user=xiadmin
+    password={{ .Values.auth.db_password }}
+    port=5432
+
+    [security]
+    apikey={{ .Values.auth.api_key }}
+    apiversion=v3
+    apiport=8080
+    xiviewbaseurl=https://xiview.org/pride
+
+    [redis]
+    host=redis-service
+    port=6379
+    password={{ .Values.auth.redis_password }}
+    peptide_per_protein=peptide_per_protein_cache
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: crosslinking-api
+  labels:
+    app: crosslinking-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: crosslinking-api
+  template:
+    metadata:
+      labels:
+        app: crosslinking-api
+    spec:
+      volumes:
+        - name: application-db-config
+          configMap:
+            name: crosslinking-api-config
+            items:
+              - key: config.ini
+                path: database.ini
+      containers:
+        - name: crosslinking-api
+          image: {{ .Values.image.registry }}/crosslinking-api:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.crosslinkingApi.resources | nindent 12 }}
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: application-db-config
+              mountPath: /home/appuser/database.ini
+              subPath: database.ini
+              readOnly: true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: crosslinking-api-service
+spec:
+  selector:
+    app: crosslinking-api
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080

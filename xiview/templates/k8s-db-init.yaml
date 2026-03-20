@@ -1,0 +1,33 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: xiview-db-init
+  labels:
+    app: xiview-db-init
+spec:
+  ttlSecondsAfterFinished: 600
+  template:
+    spec:
+      volumes:
+        - name: application-db-config
+          configMap:
+            name: crosslinking-api-config
+            items:
+              - key: config.ini
+                path: database.ini
+      containers:
+        - name: db-init
+          image: {{ .Values.image.registry }}/xiview-upload-api:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          command: ["sh", "-c", "PYTHONPATH=/home/appuser python parser/database/create_db_schema.py"]
+          env:
+            - name: DB_CONFIG
+              value: "/home/appuser/database.ini"
+          volumeMounts:
+            - name: application-db-config
+              mountPath: /home/appuser/database.ini
+              subPath: database.ini
+              readOnly: true
+      restartPolicy: OnFailure

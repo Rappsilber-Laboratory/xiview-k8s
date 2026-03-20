@@ -1,0 +1,54 @@
+# Generic Image Configuration
+image:
+  registry: "rappsilberlab"
+  tag: "2026-03-20"
+  pullPolicy: IfNotPresent
+
+# Base Authentication Configs
+auth:
+  api_key: "your_api_key_here"
+  db_password: "your_secure_db_password"
+  redis_password: "your_secure_redis_password"
+
+# Ingress Network Mapping
+ingress:
+  enabled: true
+  host: "xiview.local"
+  className: "nginx"
+  # Generic mapping for proxy annotations (e.g. HTTPS issuer or rate limiting)
+  annotations: {}
+    # cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    # traefik.ingress.kubernetes.io/router.middlewares: "default-xiview-basic-auth@kubernetescrd"
+  tls:
+    enabled: false
+    secretName: "xiview-tls-secret"
+
+# -------------------------------
+# Microservice Specific Resources
+# -------------------------------
+
+xiviewFrontend:
+  resources: {}
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+xiviewServer:
+  resources: {}
+
+crosslinkingApi:
+  resources: {}
+
+xiviewUploadApi:
+  resources: {}
+
+mzidentmlReader:
+  resources: {}
+
+postgres:
+  image: "postgres:15-alpine"
+  resources: {}
+
+redis:
+  image: "redis:alpine"
+  resources: {}

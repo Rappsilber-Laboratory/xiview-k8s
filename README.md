@@ -19,7 +19,9 @@ This stack runs entirely natively inside Kubernetes, orchestrated via standard `
 - `kubectl` configured with cluster access.
 - Local Docker environment to build standard configurations (`docker buildx`).
 
-## Quickstart Deployment
+## Quickstart Deployment via Helm
+
+We utilize a Helm Chart to rapidly deploy and parameterize all components dynamically without needing to alter source `.yaml` files.
 
 **1. Clone the repository and initialize submodules:**
 ```bash
@@ -28,33 +30,20 @@ cd xiview-stack
 git submodule update --init --recursive
 ```
 
-**2. Provision the Postgres Database Layer:**
-Initialize the backing dataset tables by creating the stateful resources, database components, and the automatic initialization job:
+**2. Configure your Deployment Values:**
+Open `xiview/values.yaml` and adjust the variables specifying your Docker Hub repository names, preferred tags, and custom Ingress host URLs.
+
+**3. Install the Deployment Stack:**
+Assuming your Kubernetes cluster (`kubectl`) is currently active, install the generic release name natively:
 ```bash
-kubectl apply -f k8s-postgresql.yaml
-kubectl apply -f k8s-db-init.yaml
+helm install my-xiview ./xiview
 ```
-*Tip: Wait for `db-init-job` to complete before proceeding (`kubectl get jobs`).*
+*Note: This command provisions the complete Postgres layer, installs the crosslinking indexing services, and binds the generic frontend to your chosen Traefik Ingress routes automatically.*
 
-**3. Apply Core API Components:**
+**Upgrading or Rolling Actions:**
+If you change `values.yaml` or rebuild container components, seamlessly push the upgrade logic via Helm:
 ```bash
-kubectl apply -f k8s-xiview-upload-api.yaml
-kubectl apply -f k8s-mzidentml-reader.yaml
-kubectl apply -f k8s-crosslinking-api.yaml
-```
-
-**4. Deploy Frontend Renders:**
-```bash
-kubectl apply -f k8s-xiview-server.yaml
-kubectl apply -f k8s-xiview-frontend.yaml
-```
-
-**5. Handle Incoming Traffic:**
-If you have a Traefik Ingress Controller and Let's Encrypt cluster-issuers already configured on your cluster, you can securely route internet traffic using a standard Ingress manifest. 
-
-A fully working routing template is provided in **[`k8s-ingress-example.yaml`](./k8s-ingress-example.yaml)**. Apply it utilizing your domain overrides:
-```bash
-kubectl apply -f k8s-ingress-example.yaml
+helm upgrade my-xiview ./xiview
 ```
 
 **Why is the Ingress setup so complex?**

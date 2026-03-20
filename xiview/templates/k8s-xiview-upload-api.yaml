@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: xiview-upload-api
+  labels:
+    app: xiview-upload-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: xiview-upload-api
+  template:
+    metadata:
+      labels:
+        app: xiview-upload-api
+    spec:
+      volumes:
+        - name: application-db-config
+          configMap:
+            name: crosslinking-api-config
+            items:
+              - key: config.ini
+                path: database.ini
+      containers:
+        - name: xiview-upload-api
+          image: {{ .Values.image.registry }}/xiview-upload-api:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.xiviewUploadApi.resources | nindent 12 }}
+          env:
+            - name: DB_CONFIG
+              value: "/home/appuser/database.ini"
+          ports:
+            - containerPort: 8090
+          volumeMounts:
+            - name: application-db-config
+              mountPath: /home/appuser/database.ini
+              subPath: database.ini
+              readOnly: true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: xiview-upload-api-service
+spec:
+  selector:
+    app: xiview-upload-api
+  ports:
+    - protocol: TCP
+      port: 8090
+      targetPort: 8090
