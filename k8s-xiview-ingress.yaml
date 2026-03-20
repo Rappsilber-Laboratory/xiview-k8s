@@ -4,6 +4,7 @@ metadata:
   name: xiview-ingress
   annotations:
     cert-manager.io/cluster-issuer: "letsencrypt-prod" # Make sure this matches your environment's cluster issuer name
+    traefik.ingress.kubernetes.io/router.middlewares: default-redirect-https@kubernetescrd
 spec:
   ingressClassName: "traefik"
   rules:
