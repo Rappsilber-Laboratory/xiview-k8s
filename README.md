@@ -50,115 +50,16 @@ kubectl apply -f k8s-xiview-frontend.yaml
 ```
 
 **5. Handle Incoming Traffic:**
-If you have a Traefik Ingress Controller and Let's Encrypt cluster-issuers already configured on your cluster, you can securely route internet traffic using a standard Ingress manifest. Create a file named `k8s-ingress.yaml` routing internal services outwards. For example:
+If you have a Traefik Ingress Controller and Let's Encrypt cluster-issuers already configured on your cluster, you can securely route internet traffic using a standard Ingress manifest. 
 
-```yaml
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: xiview-ingress
-spec:
-  rules:
-    - host: xiview.your-domain.com
-      http:
-        paths:
-          # Frontend React UI for Overviews/Uploads
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: xiview-frontend-service
-                port:
-                  number: 80
-          # Legacy xiVIEW server reserved for visualization scripts and rendering HTML
-          - path: /network.html
-            pathType: Exact
-            backend:
-              service:
-                name: xiview-server-service
-                port:
-                  number: 80
-          - path: /spectra.html
-            pathType: Exact
-            backend:
-              service:
-                name: xiview-server-service
-                port:
-                  number: 80
-          - path: /xiview.js
-            pathType: Exact
-            backend:
-              service:
-                name: xiview-server-service
-                port:
-                  number: 80
-          - path: /vendors.js
-            pathType: Exact
-            backend:
-              service:
-                name: xiview-server-service
-                port:
-                  number: 80
-          - path: /xiview-pride.css
-            pathType: Exact
-            backend:
-              service:
-                name: xiview-server-service
-                port:
-                  number: 80
-          # Asset prefixes for the legacy server visualization engine
-          - path: /images
-            pathType: Prefix
-            backend:
-              service:
-                name: xiview-server-service
-                port:
-                  number: 80
-          - path: /Lato
-            pathType: Prefix
-            backend:
-              service:
-                name: xiview-server-service
-                port:
-                  number: 80
-          - path: /fontawesome
-            pathType: Prefix
-            backend:
-              service:
-                name: xiview-server-service
-                port:
-                  number: 80
-          - path: /R
-            pathType: Prefix
-            backend:
-              service:
-                name: xiview-server-service
-                port:
-                  number: 80
-          - path: /docs
-            pathType: Prefix
-            backend:
-              service:
-                name: xiview-server-service
-                port:
-                  number: 80
-          # Explicit hook bypassing regular /pride routing to the fastAPI uploader
-          - path: /pride/ws/archive/crosslinking/v3/upload_local
-            pathType: Exact
-            backend:
-              service:
-                name: xiview-upload-api-service
-                port:
-                  number: 8090
-          # Default EBI REST mapping towards your local backend
-          - path: /pride
-            pathType: Prefix
-            backend:
-              service:
-                name: crosslinking-api-service
-                port:
-                  number: 8080
+A fully working routing template is provided in **[`k8s-ingress-example.yaml`](./k8s-ingress-example.yaml)**. Apply it utilizing your domain overrides:
+```bash
+kubectl apply -f k8s-ingress-example.yaml
 ```
+
+**Why is the Ingress setup so complex?**
+The xiVIEW architecture uses submodules that were originally built to interface directly with EBI PRIDE's public `.org` HTTP endpoint structures. Instead of modifying each submodule's source code to utilize new internal DNS paths, our cluster safely emulates the exact EBI namespace dynamically. 
+The Ingress rules ensure that broad requests pointing to `/pride` correctly hit the database querying service (`crosslinking-api`), while highly-specific exact matches like `/pride/ws/.../upload_local` safely bypass the database and perfectly filter into your file processing service (`xiview-upload-api`). The remaining visualization static assets scale backwards seamlessly from the legacy `.html` engines.
 
 ## Creating Custom Docker Containers
 The deployment YAML files currently pull from `rappsilberlab` docker-hub repositories. If you would like to edit the Python/React codebase uniquely or compile fresh artifacts locally natively:
