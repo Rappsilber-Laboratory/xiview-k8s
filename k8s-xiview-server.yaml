@@ -36,7 +36,7 @@ spec:
                 path: database.ini
       containers:
         - name: xiview-server
-          image: rappsilberlab/xiview-server:latest
+          image: rappsilberlab/xiview-server:2026-03-20
           imagePullPolicy: Always
           ports:
             - containerPort: 8080

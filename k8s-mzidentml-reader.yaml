@@ -10,7 +10,7 @@ spec:
     spec:
       containers:
       - name: mzidentml-reader
-        image: rappsilberlab/mzidentml-reader:latest
+        image: rappsilberlab/mzidentml-reader:2026-03-20
         imagePullPolicy: Always
         args: ["-h"]
       restartPolicy: Never

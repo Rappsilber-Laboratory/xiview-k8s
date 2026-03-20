@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: xiview-frontend
-          image: rappsilberlab/xiview-frontend:latest
+          image: rappsilberlab/xiview-frontend:2026-03-20
           imagePullPolicy: Always
           ports:
             - containerPort: 80

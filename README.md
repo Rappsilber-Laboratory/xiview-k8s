@@ -64,7 +64,7 @@ The Ingress rules ensure that broad requests pointing to `/pride` correctly hit 
 ## Creating Custom Docker Containers
 The deployment YAML files currently pull from `rappsilberlab` docker-hub repositories. If you would like to edit the Python/React codebase uniquely or compile fresh artifacts locally natively:
 ```bash
-docker build -t rappsilberlab/xiview-frontend:latest -f Dockerfile.xiview-frontend .
+docker build -t rappsilberlab/xiview-frontend:2026-03-20 -f Dockerfile.xiview-frontend .
 ```
 *(Repeat for `Dockerfile.crosslinking-api`, `Dockerfile.xiview-server`, `Dockerfile.xiview-upload-api`, and `Dockerfile.mzidentml-reader`).*
 
