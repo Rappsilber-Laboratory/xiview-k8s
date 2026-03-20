@@ -13,9 +13,9 @@ export default function HistoryPage() {
       setDatasets(data.map((d: any) => ({
         id: d.project_id,
         name: d.identification_file_name,
-        date: 'Recent', 
+        date: d.upload_date || 'Unknown', 
         status: 'success',
-        size: 'Parsed DB',
+        size: d.size_matches || 'N/A',
       })));
     } catch (e) {
       console.error(e);
