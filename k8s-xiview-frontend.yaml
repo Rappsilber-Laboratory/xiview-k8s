@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: xiview-frontend
+  labels:
+    app: xiview-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: xiview-frontend
+  template:
+    metadata:
+      labels:
+        app: xiview-frontend
+    spec:
+      containers:
+        - name: xiview-frontend
+          image: docker-registry.z3ro.one/xiview-frontend:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: xiview-frontend-service
+spec:
+  selector:
+    app: xiview-frontend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: ClusterIP

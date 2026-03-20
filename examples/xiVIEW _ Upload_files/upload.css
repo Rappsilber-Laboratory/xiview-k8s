@@ -1,0 +1,195 @@
+#fileupload {
+    /*width: 0.1px;*/
+    /*height: 0.1px;*/
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+.uploadbox{
+    background-image: url("../images/icons/upload-box.png");
+    background-color: transparent; /* make the button transparent */
+    background-repeat: no-repeat;  /* make the background image appear only once */
+    background-position: 0 0;  /* equivalent to 'top left' */
+    /* border: none; */           /* assuming we don't want any borders */
+    cursor: pointer;        /* make the cursor like hovering over an <a> element */
+    height: 32px;           /* make this the size of your image */
+    padding-left: 32px;     /* make text start to the right of the image */
+    vertical-align: middle; /* align the text vertically centered */
+    margin-right: -17px;
+}
+#fileupload + label {
+    cursor: pointer;
+    border: 1px solid #666;
+    color: #666;
+    padding-left: 15px;
+}
+#fileupload:focus + label,
+#fileupload + label:hover {
+    color: #fff;
+    background-color: #666;
+}
+/*#pxd_submit{*/
+/*    margin-top:1em;*/
+/*    line-height: 1.8em;*/
+/*}*/
+/*#pxd_submitBtn{*/
+/*    position: relative;*/
+/*    font-size: 0.8em;*/
+/*    display: inline;*/
+/*    float: right;*/
+/*    padding: 1em;*/
+/*    bottom: 1.5em;*/
+/*}*/
+/*#pxd_submitInfo{*/
+/*    display:inline;*/
+/*}*/
+#uploadProgress{
+    flex-grow: 1;
+    margin: 10px;
+}
+.fileupload_info{
+    margin-top: 10px;
+}
+.file_upload_bar {
+    height: 30px;
+    background: #2ca25f;
+    -moz-border-radius: 25px;
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    box-shadow: inset 0 -1px 1px rgba(255,255,255,0.3);
+    font-size: 0.7em;
+    text-align: center;
+    /* vertical-align: top; */
+}
+.file_upload_percent{
+    top: -3px;
+    position: relative;
+    color: #fff;
+}
+.loader {
+    border: 3px solid #cbc8c8; /* Light grey */
+    border-top: 3px solid #091D42; /* Blue */
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    animation: spin 2s linear infinite;
+    display: inline-block;
+}
+/*#pxd_error{*/
+/*    color: red;*/
+/*}*/
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+.checkmark {
+    display:inline-block;
+    width: 22px;
+    height:22px;
+    -ms-transform: rotate(45deg); /* IE 9 */
+    -webkit-transform: rotate(45deg); /* Chrome, Safari, Opera */
+    transform: rotate(45deg);
+}
+
+.checkmark_stem {
+    position: absolute;
+    width: 4px;
+    height: 14px;
+    background-color: #2ca25f;
+    left:11px;
+    top:6px;
+}
+
+.checkmark_kick {
+    position: absolute;
+    width: 6px;
+    height: 4px;
+    background-color: #2ca25f;
+    left: 7px;
+    top: 16px;
+}
+
+.statusBox{
+    margin-left: 5px;
+}
+
+#submitDataInfo {
+    margin: 1em;
+    text-align: center;
+    display: none;
+}
+#submitDataInfo  a {
+    color: #750000;
+}
+#submitDataInfo  a:visited {
+    color: #300;
+}
+#submitDataInfo  a:hover {
+    color: #333333;
+    border-bottom-color: rgba(255, 255, 255, 0);
+}
+#errorLog {
+    width: 100%;
+    display: none;
+    height: 25em;
+}
+#submitDataTop {
+  border-bottom: 1px solid #333;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+}
+#submitDataControls {
+  margin-top: 0.7em;
+}
+#ionsMsg{
+  margin-bottom: 0.5em;
+}
+.spinnerWrapper {
+ position: relative;
+ margin-top: 130px;
+}
+
+#csvModificationsForm .form-control{
+    margin: 0 2em;
+}
+#fileUploadWrapper{
+    display: flex;
+    margin-top: 0.9em;
+    font-size: 1.3em;
+}
+#pxdFileTable{
+    font-size: 0.8em;
+    white-space:nowrap;
+}
+.identifier{
+    display:none;
+}
+ol {
+    list-style-type: lower-roman;
+}
+#fileUploadWrapper > label{
+    padding: 10px;
+}
+#fileUploadWrapper > label > span:nth-child(2){
+    margin-left: 30px;
+    margin-right:20px;
+
+}
+
+#csvModificationsForm{
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+input[type=number] {
+    -moz-appearance:textfield; /* Firefox */
+}

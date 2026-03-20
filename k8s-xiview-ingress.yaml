@@ -1,0 +1,39 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: xiview-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod" # Make sure this matches your environment's cluster issuer name
+spec:
+  ingressClassName: "traefik"
+  rules:
+    - host: xiview.z3ro.one
+      http:
+        paths:
+          # Frontend React UI for Overviews/Uploads
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: xiview-frontend-service
+                port:
+                  number: 80
+          # Legacy xiVIEW server explicitly reserved for visualization
+          - path: /network.html
+            pathType: Prefix
+            backend:
+              service:
+                name: xiview-server-service
+                port:
+                  number: 80
+          - path: /docs
+            pathType: Prefix
+            backend:
+              service:
+                name: xiview-server-service
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - xiview.z3ro.one
+      secretName: xiview-tls-secret
