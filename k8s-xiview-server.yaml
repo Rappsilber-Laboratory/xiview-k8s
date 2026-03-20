@@ -1,0 +1,66 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: xiview-server-config
+  namespace: xiview
+data:
+  database.ini: |
+    [postgresql]
+    host=crosslinking-api-service
+    database=crosslinking
+    user=xiadmin
+    password=your_password_here
+    port=5432
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: xiview-server
+  namespace: xiview
+  labels:
+    app: xiview-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: xiview-server
+  template:
+    metadata:
+      labels:
+        app: xiview-server
+    spec:
+      volumes:
+        - name: application-db-config
+          configMap:
+            name: xiview-server-config
+            items:
+              - key: database.ini
+                path: database.ini
+      containers:
+        - name: xiview-server
+          image: docker-registry.z3ro.one/xiview-server:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: PORT
+              value: "8080"
+          volumeMounts:
+            - name: application-db-config
+              mountPath: /home/appuser/database.ini
+              subPath: database.ini
+              readOnly: true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: xiview-server-service
+  namespace: xiview
+spec:
+  selector:
+    app: xiview-server
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: LoadBalancer

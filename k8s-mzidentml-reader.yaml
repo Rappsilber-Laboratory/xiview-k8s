@@ -1,0 +1,17 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: mzidentml-reader-job
+  namespace: xiview
+spec:
+  template:
+    metadata:
+      labels:
+        app: mzidentml-reader
+    spec:
+      containers:
+      - name: mzidentml-reader
+        image: docker-registry.z3ro.one/mzidentml-reader:latest
+        imagePullPolicy: Always
+        args: ["-h"]
+      restartPolicy: Never

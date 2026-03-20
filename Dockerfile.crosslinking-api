@@ -1,0 +1,27 @@
+FROM python:3.11-slim as base
+
+ENV LANG C.UTF-8
+ENV LC_ALL C.UTF-8
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONFAULTHANDLER 1
+ENV PYTHONUNBUFFERED 1
+
+RUN python3 -m pip install wheel pip --upgrade && pip install pipenv
+RUN apt-get update && apt-get install -y --no-install-recommends build-essential && rm -rf /var/lib/apt/lists/*
+
+COPY crosslinking-api/Pipfile .
+COPY crosslinking-api/Pipfile.lock .
+RUN pipenv requirements > /tmp/requirements.txt && pip install -r /tmp/requirements.txt
+
+RUN useradd --create-home appuser
+WORKDIR /home/appuser
+USER appuser
+RUN mkdir -p /home/appuser/mzId_convertor_temp
+RUN mkdir -p /home/appuser/logs
+
+COPY crosslinking-api/app ./app
+COPY crosslinking-api/*.py .
+COPY crosslinking-api/default.database.ini ./database.ini
+COPY crosslinking-api/logging.ini .
+
+CMD ["python", "main.py"]
