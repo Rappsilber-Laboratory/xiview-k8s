@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Upload, File, AlertCircle } from 'lucide-react';
+import { Upload, File, AlertCircle, X } from 'lucide-react';
 
 export default function UploadPage() {
   const [files, setFiles] = useState<globalThis.File[]>([]);
@@ -58,7 +58,7 @@ export default function UploadPage() {
             style={{ display: 'none' }}
             onChange={(e) => {
               if (e.target.files && e.target.files.length > 0) {
-                setFiles(Array.from(e.target.files));
+                setFiles((prev) => [...prev, ...Array.from(e.target.files!)]);
                 setIsComplete(false); // Reset completion status for new file
               }
             }}
@@ -83,7 +83,17 @@ export default function UploadPage() {
                    <p>{file.name}</p>
                  </div>
                </div>
-               <span className="status-badge success">Ready</span>
+               <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                 <span className="status-badge success">Ready</span>
+                 <button 
+                   className="action-btn delete" 
+                   onClick={() => setFiles(files.filter((_, i) => i !== idx))}
+                   style={{ padding: '0.25rem', display: 'flex' }}
+                   title="Remove File"
+                 >
+                   <X size={16} />
+                 </button>
+               </div>
              </div>
           ))}
           
