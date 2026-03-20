@@ -42,7 +42,7 @@ export default function UploadPage() {
         <p>Upload mzIdentML and peak list components for parsing</p>
       </div>
 
-      <div className="glass-panel upload-container">
+      <div className="panel upload-container">
         
         {/* Dropzone area */}
         <div className="upload-dropzone">
@@ -66,7 +66,7 @@ export default function UploadPage() {
           <button 
             className="upload-btn"
             onClick={() => document.getElementById('file-upload')?.click()}
-            style={{ background: 'rgba(99, 102, 241, 0.2)', color: 'var(--accent-color)', border: '1px solid var(--accent-color)' }}
+            style={{ background: '#f8f8ff', color: 'var(--accent-color)', border: '1px solid var(--accent-color)' }}
           >
             Browse Files
           </button>
@@ -100,7 +100,7 @@ export default function UploadPage() {
           )}
 
           {isComplete && (
-            <div className="file-item" style={{ background: 'rgba(16, 185, 129, 0.1)', borderColor: 'rgba(16, 185, 129, 0.2)'}}>
+            <div className="file-item" style={{ background: '#e6f8f1', borderColor: '#10b981'}}>
               <div className="file-info">
                 <File className="file-icon" color="var(--success-color)" />
                 <div className="file-details">
@@ -125,7 +125,7 @@ export default function UploadPage() {
       </div>
 
       {/* Info Sections */}
-      <div className="glass-panel info-section" style={{ marginTop: '2rem' }}>
+      <div className="panel info-section" style={{ marginTop: '2rem' }}>
         <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <AlertCircle size={20} color="var(--accent-color)" />
           How to submit a crosslinking dataset

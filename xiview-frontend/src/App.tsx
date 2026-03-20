@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { LayoutDashboard, UploadCloud, Database, PlayCircle } from 'lucide-react';
+import { UploadCloud, Database } from 'lucide-react';
 import UploadPage from './pages/UploadPage';
 import HistoryPage from './pages/HistoryPage';
 
@@ -15,13 +15,6 @@ function App() {
         </div>
         <nav className="nav-menu">
           <div 
-            className={`nav-link ${activeTab === 'home' ? 'active' : ''}`}
-            onClick={() => setActiveTab('home')}
-          >
-            <LayoutDashboard size={20} />
-            <span>Home</span>
-          </div>
-          <div 
             className={`nav-link ${activeTab === 'upload' ? 'active' : ''}`}
             onClick={() => setActiveTab('upload')}
           >
@@ -35,10 +28,6 @@ function App() {
             <Database size={20} />
             <span>My Data</span>
           </div>
-          <div className="nav-link">
-            <PlayCircle size={20} />
-            <span>Demo</span>
-          </div>
         </nav>
         
         <div className="sidebar-footer">
@@ -51,19 +40,6 @@ function App() {
       <main className="main-content">
         {activeTab === 'upload' && <UploadPage />}
         {activeTab === 'history' && <HistoryPage />}
-        {activeTab === 'home' && (
-          <div className="animate-in">
-            <div className="page-header">
-              <h2>Welcome to xiVIEW</h2>
-              <p>Advanced visual analysis of cross-linked mass spectrometry data</p>
-            </div>
-            <div className="glass-panel">
-              <p style={{ color: 'var(--text-secondary)' }}>
-                Please navigate to the <strong>Upload</strong> section to parse new mzIdentML files, or view your existing parsed datasets in <strong>My Data</strong>. 
-              </p>
-            </div>
-          </div>
-        )}
       </main>
     </div>
   );

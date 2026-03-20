@@ -53,7 +53,7 @@ export default function HistoryPage() {
         <p>Review and query stored crosslinking projects</p>
       </div>
 
-      <div className="glass-panel">
+      <div className="panel">
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2rem', alignItems: 'center' }}>
           <h3>Recently Uploaded Datasets</h3>
           <button className="upload-btn" onClick={fetchDatasets} style={{ margin: 0, padding: '0.5rem 1rem' }}>
