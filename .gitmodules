@@ -1,0 +1,9 @@
+[submodule "xiview-server"]
+	path = xiview-server
+	url = git@github.com:Rappsilber-Laboratory/xiview-server.git
+[submodule "mzidentml-reader"]
+	path = mzidentml-reader
+	url = git@github.com:Rappsilber-Laboratory/mzidentml-reader.git
+[submodule "crosslinking-api"]
+	path = crosslinking-api
+	url = https://github.com/Rappsilber-Laboratory/crosslinking-api
