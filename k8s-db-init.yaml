@@ -17,7 +17,7 @@ spec:
                 path: database.ini
       containers:
         - name: db-init
-          image: docker-registry.z3ro.one/xiview-upload-api:latest
+          image: rappsilberlab/xiview-upload-api:latest
           imagePullPolicy: Always
           command: ["sh", "-c", "PYTHONPATH=/home/appuser python parser/database/create_db_schema.py"]
           env:

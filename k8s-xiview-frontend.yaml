@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: xiview-frontend
-          image: docker-registry.z3ro.one/xiview-frontend:latest
+          image: rappsilberlab/xiview-frontend:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 80

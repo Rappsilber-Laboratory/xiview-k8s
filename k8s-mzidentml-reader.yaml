@@ -10,7 +10,7 @@ spec:
     spec:
       containers:
       - name: mzidentml-reader
-        image: docker-registry.z3ro.one/mzidentml-reader:latest
+        image: rappsilberlab/mzidentml-reader:latest
         imagePullPolicy: Always
         args: ["-h"]
       restartPolicy: Never

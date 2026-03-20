@@ -48,7 +48,7 @@ spec:
                 path: database.ini
       containers:
         - name: crosslinking-api
-          image: docker-registry.z3ro.one/crosslinking-api:latest
+          image: rappsilberlab/crosslinking-api:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8080

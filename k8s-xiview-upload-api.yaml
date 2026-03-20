@@ -23,7 +23,7 @@ spec:
                 path: database.ini
       containers:
         - name: xiview-upload-api
-          image: docker-registry.z3ro.one/xiview-upload-api:latest
+          image: rappsilberlab/xiview-upload-api:latest
           imagePullPolicy: Always
           env:
             - name: DB_CONFIG
