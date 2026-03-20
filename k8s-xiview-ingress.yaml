@@ -20,6 +20,55 @@ spec:
                   number: 80
           # Legacy xiVIEW server explicitly reserved for visualization
           - path: /network.html
+            pathType: Exact
+            backend:
+              service:
+                name: xiview-server-service
+                port:
+                  number: 80
+          - path: /spectra.html
+            pathType: Exact
+            backend:
+              service:
+                name: xiview-server-service
+                port:
+                  number: 80
+          - path: /xiview.js
+            pathType: Exact
+            backend:
+              service:
+                name: xiview-server-service
+                port:
+                  number: 80
+          - path: /vendors.js
+            pathType: Exact
+            backend:
+              service:
+                name: xiview-server-service
+                port:
+                  number: 80
+          - path: /xiview-pride.css
+            pathType: Exact
+            backend:
+              service:
+                name: xiview-server-service
+                port:
+                  number: 80
+          - path: /images
+            pathType: Prefix
+            backend:
+              service:
+                name: xiview-server-service
+                port:
+                  number: 80
+          - path: /Lato
+            pathType: Prefix
+            backend:
+              service:
+                name: xiview-server-service
+                port:
+                  number: 80
+          - path: /fontawesome
             pathType: Prefix
             backend:
               service:

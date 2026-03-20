@@ -24,20 +24,22 @@ RUN PIPENV_VENV_IN_PROJECT=1 pipenv install --system
 
 RUN useradd --create-home appuser
 WORKDIR /home/appuser
-USER appuser
 RUN mkdir -p /home/appuser/logs
 
 COPY xiview-server/static ./static
-COPY xiview-server/templates/ /usr/share/nginx/html/
+COPY xiview-server/templates ./templates
 
 # Re-route the hardcoded EBI PRIDE endpoints to our self-hosted proxy natively without modifying the submodules!
-RUN sed -i 's|https://www.ebi.ac.uk/pride/ws/archive/crosslinking/v3/data/|/pride/ws/archive/crosslinking/v3/data/|g' /usr/share/nginx/html/network.html /usr/share/nginx/html/spectra.html
-RUN sed -i 's|"xiAnnotator/"|"/pride/ws/archive/crosslinking/v3/data/"|g' /usr/share/nginx/html/network.html /usr/share/nginx/html/spectra.html
+RUN sed -i 's|https://www.ebi.ac.uk/pride/ws/archive/crosslinking/v3/data/|/pride/ws/archive/crosslinking/v3/data/|g' ./static/network.html ./static/spectra.html
+RUN sed -i 's|"xiAnnotator/"|"/pride/ws/archive/crosslinking/v3/data/"|g' ./static/network.html ./static/spectra.html
+RUN mv ./static/pride.css ./static/xiview-pride.css
+RUN sed -i 's|pride.css|xiview-pride.css|g' ./static/network.html ./static/spectra.html
 COPY xiview-server/tests ./tests
 COPY xiview-server/xiview_server ./xiview_server
 COPY xiview-server/.env .
 COPY xiview-server/default.database.ini ./database.ini
-COPY xiview-server/logging.ini .
+RUN chown -R appuser:appuser /home/appuser
+USER appuser
 
 ENV PORT=8080
 ENV URL_PREFIX=""
