@@ -2,7 +2,7 @@ apiVersion: v2
 name: xiview-stack
 description: A comprehensive Helm chart deploying the xiVIEW crosslinking mass spectrometry visualization suite. Includes robust API backends, Redis caching, robust PostgreSQL storage, and React frontends.
 type: application
-version: 1.0.0
+version: 1.0.1
 appVersion: "2026-03-20"
 
 keywords:
