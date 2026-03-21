@@ -8,11 +8,19 @@ spec:
       labels:
         app: mzidentml-reader
     spec:
-      containers:
+      {{- with .Values.mzidentmlReader.nodeSelector }}
+nodeSelector:
+  {{- toYaml . | nindent 2 }}
+{{- end }}
+{{- with .Values.mzidentmlReader.affinity }}
+affinity:
+  {{- toYaml . | nindent 2 }}
+{{- end }}
+{{- with .Values.mzidentmlReader.tolerations }}
+tolerations:
+  {{- toYaml . | nindent 2 }}
+{{- end }}
+containers:
       - name: mzidentml-reader
-        image: {{ .Values.image.registry }}/mzidentml-reader:{{ .Values.image.tag }}
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
-        resources:
-          {{- toYaml .Values.mzidentmlReader.resources | nindent 10 }}
-        args: ["-h"]
-      restartPolicy: Never
+        image: "{{ .Values.global.imageRegistry }}/{{ .Values.mzidentmlReader.image.repository }}:{{ .Values.mzidentmlReader.image.tag }}"
+        imagePullPolicy: {{ .Values.mzidentmlReader.image.pullPolicy }}

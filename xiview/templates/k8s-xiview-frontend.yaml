@@ -5,7 +5,7 @@ metadata:
   labels:
     app: xiview-frontend
 spec:
-  replicas: 1
+  replicas: {{ .Values.xiviewFrontend.replicaCount }}
   selector:
     matchLabels:
       app: xiview-frontend
@@ -14,24 +14,19 @@ spec:
       labels:
         app: xiview-frontend
     spec:
-      containers:
+      {{- with .Values.xiviewFrontend.nodeSelector }}
+nodeSelector:
+  {{- toYaml . | nindent 2 }}
+{{- end }}
+{{- with .Values.xiviewFrontend.affinity }}
+affinity:
+  {{- toYaml . | nindent 2 }}
+{{- end }}
+{{- with .Values.xiviewFrontend.tolerations }}
+tolerations:
+  {{- toYaml . | nindent 2 }}
+{{- end }}
+containers:
         - name: xiview-frontend
-          image: {{ .Values.image.registry }}/xiview-frontend:{{ .Values.image.tag }}
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          resources:
-            {{- toYaml .Values.xiviewFrontend.resources | nindent 12 }}
-          ports:
-            - containerPort: 80
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: xiview-frontend-service
-spec:
-  selector:
-    app: xiview-frontend
-  ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 80
-  type: ClusterIP
+          image: "{{ .Values.global.imageRegistry }}/{{ .Values.xiviewFrontend.image.repository }}:{{ .Values.xiviewFrontend.image.tag }}"
+          imagePullPolicy: {{ .Values.xiviewFrontend.image.pullPolicy }}

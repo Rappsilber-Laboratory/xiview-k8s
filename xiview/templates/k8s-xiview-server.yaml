@@ -18,7 +18,7 @@ metadata:
   labels:
     app: xiview-server
 spec:
-  replicas: 1
+  replicas: {{ .Values.xiviewServer.replicaCount }}
   selector:
     matchLabels:
       app: xiview-server
@@ -34,32 +34,19 @@ spec:
             items:
               - key: database.ini
                 path: database.ini
-      containers:
+      {{- with .Values.xiviewServer.nodeSelector }}
+nodeSelector:
+  {{- toYaml . | nindent 2 }}
+{{- end }}
+{{- with .Values.xiviewServer.affinity }}
+affinity:
+  {{- toYaml . | nindent 2 }}
+{{- end }}
+{{- with .Values.xiviewServer.tolerations }}
+tolerations:
+  {{- toYaml . | nindent 2 }}
+{{- end }}
+containers:
         - name: xiview-server
-          image: {{ .Values.image.registry }}/xiview-server:{{ .Values.image.tag }}
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          resources:
-            {{- toYaml .Values.xiviewServer.resources | nindent 12 }}
-          ports:
-            - containerPort: 8080
-          env:
-            - name: PORT
-              value: "8080"
-          volumeMounts:
-            - name: application-db-config
-              mountPath: /home/appuser/database.ini
-              subPath: database.ini
-              readOnly: true
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: xiview-server-service
-spec:
-  selector:
-    app: xiview-server
-  ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 8080
-  type: ClusterIP
+          image: "{{ .Values.global.imageRegistry }}/{{ .Values.xiviewServer.image.repository }}:{{ .Values.xiviewServer.image.tag }}"
+          imagePullPolicy: {{ .Values.xiviewServer.image.pullPolicy }}

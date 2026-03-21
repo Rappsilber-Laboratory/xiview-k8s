@@ -17,8 +17,8 @@ spec:
                 path: database.ini
       containers:
         - name: db-init
-          image: {{ .Values.image.registry }}/xiview-upload-api:{{ .Values.image.tag }}
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: "{{ .Values.global.imageRegistry }}/{{ .Values.xiviewUploadApi.image.repository }}:{{ .Values.xiviewUploadApi.image.tag }}"
+          imagePullPolicy: {{ .Values.xiviewUploadApi.image.pullPolicy }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           command: ["sh", "-c", "PYTHONPATH=/home/appuser python parser/database/create_db_schema.py"]

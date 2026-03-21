@@ -21,7 +21,7 @@ metadata:
   labels:
     app: postgresql
 spec:
-  replicas: 1
+  replicas: {{ .Values.postgres.replicaCount }}
   selector:
     matchLabels:
       app: postgresql
@@ -30,38 +30,18 @@ spec:
       labels:
         app: postgresql
     spec:
-      containers:
+      {{- with .Values.postgres.nodeSelector }}
+nodeSelector:
+  {{- toYaml . | nindent 2 }}
+{{- end }}
+{{- with .Values.postgres.affinity }}
+affinity:
+  {{- toYaml . | nindent 2 }}
+{{- end }}
+{{- with .Values.postgres.tolerations }}
+tolerations:
+  {{- toYaml . | nindent 2 }}
+{{- end }}
+containers:
         - name: postgresql
-          image: {{ .Values.postgres.image }}
-          ports:
-            - containerPort: 5432
-          env:
-            - name: POSTGRES_DB
-              value: "crosslinking"
-            - name: POSTGRES_USER
-              value: "xiadmin"
-            - name: POSTGRES_PASSWORD
-              value: "{{ .Values.auth.db_password }}"
-          {{- if .Values.postgres.persistence.enabled }}
-          volumeMounts:
-            - name: postgresql-storage
-              mountPath: /var/lib/postgresql/data
-          {{- end }}
-      {{- if .Values.postgres.persistence.enabled }}
-      volumes:
-        - name: postgresql-storage
-          persistentVolumeClaim:
-            claimName: postgresql-pvc
-      {{- end }}
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: postgresql-service
-spec:
-  selector:
-    app: postgresql
-  ports:
-    - protocol: TCP
-      port: 5432
-      targetPort: 5432
+          image: "{{ .Values.global.imageRegistry }}/{{ .Values.postgres.image.repository }}:{{ .Values.postgres.image.tag }}"

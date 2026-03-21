@@ -5,7 +5,7 @@ metadata:
   labels:
     app: xiview-upload-api
 spec:
-  replicas: 1
+  replicas: {{ .Values.xiviewUploadApi.replicaCount }}
   selector:
     matchLabels:
       app: xiview-upload-api
@@ -21,31 +21,19 @@ spec:
             items:
               - key: config.ini
                 path: database.ini
-      containers:
+      {{- with .Values.xiviewUploadApi.nodeSelector }}
+nodeSelector:
+  {{- toYaml . | nindent 2 }}
+{{- end }}
+{{- with .Values.xiviewUploadApi.affinity }}
+affinity:
+  {{- toYaml . | nindent 2 }}
+{{- end }}
+{{- with .Values.xiviewUploadApi.tolerations }}
+tolerations:
+  {{- toYaml . | nindent 2 }}
+{{- end }}
+containers:
         - name: xiview-upload-api
-          image: {{ .Values.image.registry }}/xiview-upload-api:{{ .Values.image.tag }}
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          resources:
-            {{- toYaml .Values.xiviewUploadApi.resources | nindent 12 }}
-          env:
-            - name: DB_CONFIG
-              value: "/home/appuser/database.ini"
-          ports:
-            - containerPort: 8090
-          volumeMounts:
-            - name: application-db-config
-              mountPath: /home/appuser/database.ini
-              subPath: database.ini
-              readOnly: true
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: xiview-upload-api-service
-spec:
-  selector:
-    app: xiview-upload-api
-  ports:
-    - protocol: TCP
-      port: 8090
-      targetPort: 8090
+          image: "{{ .Values.global.imageRegistry }}/{{ .Values.xiviewUploadApi.image.repository }}:{{ .Values.xiviewUploadApi.image.tag }}"
+          imagePullPolicy: {{ .Values.xiviewUploadApi.image.pullPolicy }}

@@ -1,8 +1,7 @@
-# Generic Image Configuration
-image:
-  registry: "rappsilberlab"
-  tag: "2026-03-20"
-  pullPolicy: IfNotPresent
+# Global Shared Variables
+global:
+  imageRegistry: "rappsilberlab"
+  imagePullSecrets: []
 
 # Base Authentication Configs
 auth:
@@ -15,52 +14,129 @@ ingress:
   enabled: true
   host: "xiview.local"
   className: "nginx"
-  # Generic mapping for proxy annotations (e.g. HTTPS issuer or rate limiting)
   annotations: {}
-    # cert-manager.io/cluster-issuer: "letsencrypt-prod"
-    # traefik.ingress.kubernetes.io/router.middlewares: "default-xiview-basic-auth@kubernetescrd"
   tls:
     enabled: false
     secretName: "xiview-tls-secret"
 
 # -------------------------------
-# Microservice Specific Resources
+# Core Microservices
 # -------------------------------
-
 xiviewFrontend:
+  replicaCount: 1
+  image:
+    repository: "xiview-frontend"
+    tag: "2026-03-20"
+    pullPolicy: IfNotPresent
+  
+  service:
+    type: ClusterIP
+    port: 80
+
   resources: {}
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  podAnnotations: {}
 
 xiviewServer:
+  replicaCount: 1
+  image:
+    repository: "xiview-server"
+    tag: "2026-03-20"
+    pullPolicy: IfNotPresent
+  
+  service:
+    type: ClusterIP
+    port: 80
+
   resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  podAnnotations: {}
 
 crosslinkingApi:
+  replicaCount: 1
+  image:
+    repository: "crosslinking-api"
+    tag: "2026-03-20"
+    pullPolicy: IfNotPresent
+  
+  service:
+    type: ClusterIP
+    port: 8080
+
   resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  podAnnotations: {}
 
 xiviewUploadApi:
+  replicaCount: 1
+  image:
+    repository: "xiview-upload-api"
+    tag: "2026-03-20"
+    pullPolicy: IfNotPresent
+  
+  service:
+    type: ClusterIP
+    port: 8090
+
   resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  podAnnotations: {}
 
 mzidentmlReader:
+  image:
+    repository: "mzidentml-reader"
+    tag: "2026-03-20"
+    pullPolicy: IfNotPresent
   resources: {}
-
-
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  podAnnotations: {}
 
 postgres:
-  image: "postgres:15-alpine"
-  resources: {}
+  replicaCount: 1
+  image:
+    repository: "postgres"
+    tag: "15-alpine"
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 5432
   persistence:
     enabled: true
     size: 10Gi
     accessMode: ReadWriteOnce
-    # storageClass: "-"
+    # storageClass: "standard"
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  podAnnotations: {}
 
 redis:
-  image: "redis:alpine"
-  resources: {}
+  replicaCount: 1
+  image:
+    repository: "redis"
+    tag: "alpine"
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 6379
   persistence:
     enabled: false
     size: 5Gi
     accessMode: ReadWriteOnce
-    # storageClass: "-"
+    # storageClass: "standard"
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  podAnnotations: {}
