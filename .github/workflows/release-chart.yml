@@ -1,0 +1,45 @@
+name: Release Helm Charts
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'helm-chart/**'
+
+jobs:
+  release:
+    # Depending on default permission settings for your org (contents: read, write)
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: v3.12.0
+
+      - name: Add dependency chart repos
+        run: |
+          # If your chart has dependencies, add them here
+          # helm repo add bitnami https://charts.bitnami.com/bitnami
+          echo "No external dependencies currently required"
+
+      - name: Run chart-releaser
+        uses: helm/chart-releaser-action@v1.6.0
+        with:
+          # Assumes your chart lives in the root or a 'helm-chart' dir. 
+          # CR Action expects charts to be inside a nested folder, so we'll tell it where to look.
+          charts_dir: .
+        env:
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
