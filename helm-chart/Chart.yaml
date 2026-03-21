@@ -13,15 +13,14 @@ keywords:
   - crosslinking
   - biology
 
-home: https://xiview.org
+home: https://github.com/Rappsilber-Laboratory/xiview-stack
 
 sources:
   - https://github.com/Rappsilber-Laboratory/xiview-stack
   - https://github.com/Rappsilber-Laboratory/xiview-frontend
   - https://github.com/Rappsilber-Laboratory/xiview-server
+  - https://github.com/Rappsilber-Laboratory/mzidentml-reader
 
 maintainers:
   - name: Rappsilber Laboratory
     url: https://github.com/Rappsilber-Laboratory
-
-
