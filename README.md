@@ -21,13 +21,12 @@ This stack runs entirely natively inside Kubernetes, orchestrated via standard `
 
 ## Quickstart Deployment via Helm
 
-We exclusively use Helm to cleanly deploy, configure, and rapidly parameterize all microservice components dynamically natively on any Kubernetes cluster.
+We exclusively use Helm to cleanly deploy, configure, and rapidly parameterize all microservice components dynamically natively on any Kubernetes cluster. You don't even need to clone this repository!
 
-**1. Clone the repository and initialize submodules:**
+**1. Add the xiVIEW Helm Repository:**
 ```bash
-git clone https://github.com/Rappsilber-Laboratory/xiview-stack.git
-cd xiview-stack
-git submodule update --init --recursive
+helm repo add xiview-repo https://rappsilber-laboratory.github.io/xiview-k8s
+helm repo update
 ```
 
 **2. Create your Configuration Override (e.g. `k3s-values.yaml`):**
@@ -56,16 +55,16 @@ redis:
 ```
 
 **3. Install the Deployment Stack:**
-Assuming your Kubernetes cluster (`kubectl`) is currently active, install the Helm chart by passing your overrides:
+Assuming your Kubernetes cluster (`kubectl`) is currently active, install the Helm chart natively by passing your overrides:
 ```bash
-helm install my-xiview ./helm-chart -f k3s-values.yaml
+helm install my-xiview xiview-repo/xiview-stack -f k3s-values.yaml
 ```
 *Note: This command provisions the complete Postgres layer, resolves the backend microservices securely, and automatically binds the generic frontend GUI seamlessly to your chosen Ingress routes.*
 
 **Upgrading or Rolling Actions:**
 If you rebuild container artifacts or tweak your configuration, seamlessly push the upgrade natively via Helm across the entire stack:
 ```bash
-helm upgrade my-xiview ./helm-chart -f k3s-values.yaml
+helm upgrade my-xiview xiview-repo/xiview-stack -f k3s-values.yaml
 ```
 
 ## Architecture Notes
