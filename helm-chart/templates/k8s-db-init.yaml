@@ -30,4 +30,4 @@ spec:
               mountPath: /home/appuser/database.ini
               subPath: database.ini
               readOnly: true
-      restartPolicy: OnFailure
+      restartPolicy: Never

@@ -31,17 +31,17 @@ spec:
         app: redis
     spec:
       {{- with .Values.redis.nodeSelector }}
-nodeSelector:
-  {{- toYaml . | nindent 2 }}
-{{- end }}
-{{- with .Values.redis.affinity }}
-affinity:
-  {{- toYaml . | nindent 2 }}
-{{- end }}
-{{- with .Values.redis.tolerations }}
-tolerations:
-  {{- toYaml . | nindent 2 }}
-{{- end }}
-containers:
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.redis.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.redis.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
         - name: redis
           image: "{{ .Values.global.imageRegistry }}/{{ .Values.redis.image.repository }}:{{ .Values.redis.image.tag }}"

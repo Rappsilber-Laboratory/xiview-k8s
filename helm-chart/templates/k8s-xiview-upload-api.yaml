@@ -22,18 +22,18 @@ spec:
               - key: config.ini
                 path: database.ini
       {{- with .Values.xiviewUploadApi.nodeSelector }}
-nodeSelector:
-  {{- toYaml . | nindent 2 }}
-{{- end }}
-{{- with .Values.xiviewUploadApi.affinity }}
-affinity:
-  {{- toYaml . | nindent 2 }}
-{{- end }}
-{{- with .Values.xiviewUploadApi.tolerations }}
-tolerations:
-  {{- toYaml . | nindent 2 }}
-{{- end }}
-containers:
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.xiviewUploadApi.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.xiviewUploadApi.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
         - name: xiview-upload-api
           image: "{{ .Values.global.imageRegistry }}/{{ .Values.xiviewUploadApi.image.repository }}:{{ .Values.xiviewUploadApi.image.tag }}"
           imagePullPolicy: {{ .Values.xiviewUploadApi.image.pullPolicy }}

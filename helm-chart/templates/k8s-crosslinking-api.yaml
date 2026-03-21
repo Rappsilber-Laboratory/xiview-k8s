@@ -47,18 +47,18 @@ spec:
               - key: config.ini
                 path: database.ini
       {{- with .Values.crosslinkingApi.nodeSelector }}
-nodeSelector:
-  {{- toYaml . | nindent 2 }}
-{{- end }}
-{{- with .Values.crosslinkingApi.affinity }}
-affinity:
-  {{- toYaml . | nindent 2 }}
-{{- end }}
-{{- with .Values.crosslinkingApi.tolerations }}
-tolerations:
-  {{- toYaml . | nindent 2 }}
-{{- end }}
-containers:
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.crosslinkingApi.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.crosslinkingApi.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
         - name: crosslinking-api
           image: "{{ .Values.global.imageRegistry }}/{{ .Values.crosslinkingApi.image.repository }}:{{ .Values.crosslinkingApi.image.tag }}"
           imagePullPolicy: {{ .Values.crosslinkingApi.image.pullPolicy }}
