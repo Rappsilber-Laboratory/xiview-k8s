@@ -44,4 +44,4 @@ spec:
       {{- end }}
       containers:
         - name: redis
-          image: "{{ .Values.global.imageRegistry }}/{{ .Values.redis.image.repository }}:{{ .Values.redis.image.tag }}"
+          image: "{{ .Values.redis.image.repository }}:{{ .Values.redis.image.tag }}"

@@ -44,4 +44,4 @@ spec:
       {{- end }}
       containers:
         - name: postgresql
-          image: "{{ .Values.global.imageRegistry }}/{{ .Values.postgres.image.repository }}:{{ .Values.postgres.image.tag }}"
+          image: "{{ .Values.postgres.image.repository }}:{{ .Values.postgres.image.tag }}"
