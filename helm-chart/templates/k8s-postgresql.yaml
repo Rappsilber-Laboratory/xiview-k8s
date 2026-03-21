@@ -29,6 +29,10 @@ spec:
     metadata:
       labels:
         app: postgresql
+      {{- with .Values.postgres.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
     spec:
       {{- with .Values.postgres.nodeSelector }}
       nodeSelector:
@@ -45,3 +49,39 @@ spec:
       containers:
         - name: postgresql
           image: "{{ .Values.postgres.image.repository }}:{{ .Values.postgres.image.tag }}"
+          imagePullPolicy: {{ .Values.postgres.image.pullPolicy }}
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              value: "crosslinking"
+            - name: POSTGRES_USER
+              value: "xiadmin"
+            - name: POSTGRES_PASSWORD
+              value: "{{ .Values.auth.db_password }}"
+          {{- if .Values.postgres.persistence.enabled }}
+          volumeMounts:
+            - name: postgresql-storage
+              mountPath: /var/lib/postgresql/data
+          {{- end }}
+          resources:
+            {{- toYaml .Values.postgres.resources | nindent 12 }}
+      {{- if .Values.postgres.persistence.enabled }}
+      volumes:
+        - name: postgresql-storage
+          persistentVolumeClaim:
+            claimName: postgresql-pvc
+      {{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgresql-service
+spec:
+  selector:
+    app: postgresql
+  ports:
+    - protocol: TCP
+      port: {{ .Values.postgres.service.port }}
+      targetPort: 5432
+  type: {{ .Values.postgres.service.type }}

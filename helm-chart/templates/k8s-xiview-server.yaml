@@ -48,5 +48,30 @@ spec:
       {{- end }}
       containers:
         - name: xiview-server
-          image: "{{ .Values.global.imageRegistry }}/{{ .Values.xiviewServer.image.repository }}:{{ .Values.xiviewServer.image.tag }}"
+          image: rappsilberlab/xiview-server:2026-03-20
           imagePullPolicy: {{ .Values.xiviewServer.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.xiviewServer.resources | nindent 12 }}
+          ports:
+            - containerPort: 8080
+          env:
+            - name: PORT
+              value: "8080"
+          volumeMounts:
+            - name: application-db-config
+              mountPath: /home/appuser/database.ini
+              subPath: database.ini
+              readOnly: true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: xiview-server-service
+spec:
+  selector:
+    app: xiview-server
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: ClusterIP

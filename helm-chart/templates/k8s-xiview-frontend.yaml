@@ -28,5 +28,22 @@ spec:
       {{- end }}
       containers:
         - name: xiview-frontend
-          image: "{{ .Values.global.imageRegistry }}/{{ .Values.xiviewFrontend.image.repository }}:{{ .Values.xiviewFrontend.image.tag }}"
+          image: rappsilberlab/xiview-frontend:2026-03-20
           imagePullPolicy: {{ .Values.xiviewFrontend.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.xiviewFrontend.resources | nindent 12 }}
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: xiview-frontend-service
+spec:
+  selector:
+    app: xiview-frontend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: ClusterIP

@@ -60,5 +60,28 @@ spec:
       {{- end }}
       containers:
         - name: crosslinking-api
-          image: "{{ .Values.global.imageRegistry }}/{{ .Values.crosslinkingApi.image.repository }}:{{ .Values.crosslinkingApi.image.tag }}"
+          image: rappsilberlab/crosslinking-api:2026-03-20
           imagePullPolicy: {{ .Values.crosslinkingApi.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.crosslinkingApi.resources | nindent 12 }}
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: application-db-config
+              mountPath: /home/appuser/database.ini
+              subPath: database.ini
+              readOnly: true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: crosslinking-api-service
+spec:
+  selector:
+    app: crosslinking-api
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+
+  type: {{ .Values.crosslinkingApi.service.type }}

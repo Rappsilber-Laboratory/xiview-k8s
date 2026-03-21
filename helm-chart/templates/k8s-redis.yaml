@@ -12,8 +12,8 @@ spec:
   resources:
     requests:
       storage: {{ .Values.redis.persistence.size }}
----
 {{- end }}
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -29,6 +29,10 @@ spec:
     metadata:
       labels:
         app: redis
+      {{- with .Values.redis.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
     spec:
       {{- with .Values.redis.nodeSelector }}
       nodeSelector:
@@ -45,3 +49,33 @@ spec:
       containers:
         - name: redis
           image: "{{ .Values.redis.image.repository }}:{{ .Values.redis.image.tag }}"
+          imagePullPolicy: {{ .Values.redis.image.pullPolicy }}
+          command: ["redis-server", "--requirepass", "{{ .Values.auth.redis_password }}"]
+          ports:
+            - containerPort: 6379
+          {{- if .Values.redis.persistence.enabled }}
+          volumeMounts:
+            - name: redis-storage
+              mountPath: /data
+          {{- end }}
+          resources:
+            {{- toYaml .Values.redis.resources | nindent 12 }}
+      {{- if .Values.redis.persistence.enabled }}
+      volumes:
+        - name: redis-storage
+          persistentVolumeClaim:
+            claimName: redis-pvc
+      {{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-service
+spec:
+  selector:
+    app: redis
+  ports:
+    - protocol: TCP
+      port: {{ .Values.redis.service.port }}
+      targetPort: 6379
+  type: {{ .Values.redis.service.type }}
