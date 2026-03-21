@@ -1,0 +1,28 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: mzidentml-reader-job
+spec:
+  template:
+    metadata:
+      labels:
+        app: mzidentml-reader
+    spec:
+      {{- with .Values.mzidentmlReader.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.mzidentmlReader.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.mzidentmlReader.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+      - name: mzidentml-reader
+        image: "{{ .Values.global.imageRegistry }}/{{ .Values.mzidentmlReader.image.repository }}:{{ .Values.mzidentmlReader.image.tag }}"
+        imagePullPolicy: {{ .Values.mzidentmlReader.image.pullPolicy }}
+        args: ["-h"]
+      restartPolicy: Never

@@ -5,7 +5,7 @@ metadata:
   labels:
     app: xiview-frontend
 spec:
-  replicas: 1
+  replicas: {{ .Values.xiviewFrontend.replicaCount }}
   selector:
     matchLabels:
       app: xiview-frontend
@@ -14,10 +14,24 @@ spec:
       labels:
         app: xiview-frontend
     spec:
+      {{- with .Values.xiviewFrontend.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.xiviewFrontend.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.xiviewFrontend.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: xiview-frontend
           image: rappsilberlab/xiview-frontend:2026-03-20
-          imagePullPolicy: Always
+          imagePullPolicy: {{ .Values.xiviewFrontend.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.xiviewFrontend.resources | nindent 12 }}
           ports:
             - containerPort: 80
 ---

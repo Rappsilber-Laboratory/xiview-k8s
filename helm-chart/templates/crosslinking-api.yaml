@@ -8,11 +8,11 @@ data:
     host=postgresql-service
     database=crosslinking
     user=xiadmin
-    password=your_password_here
+    password={{ .Values.auth.db_password }}
     port=5432
 
     [security]
-    apikey=your_api_key
+    apikey={{ .Values.auth.api_key }}
     apiversion=v3
     apiport=8080
     xiviewbaseurl=https://xiview.org/pride
@@ -20,7 +20,7 @@ data:
     [redis]
     host=redis-service
     port=6379
-    password=your_redis_password
+    password={{ .Values.auth.redis_password }}
     peptide_per_protein=peptide_per_protein_cache
 ---
 apiVersion: apps/v1
@@ -30,7 +30,7 @@ metadata:
   labels:
     app: crosslinking-api
 spec:
-  replicas: 1
+  replicas: {{ .Values.crosslinkingApi.replicaCount }}
   selector:
     matchLabels:
       app: crosslinking-api
@@ -46,10 +46,24 @@ spec:
             items:
               - key: config.ini
                 path: database.ini
+      {{- with .Values.crosslinkingApi.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.crosslinkingApi.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.crosslinkingApi.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: crosslinking-api
           image: rappsilberlab/crosslinking-api:2026-03-20
-          imagePullPolicy: Always
+          imagePullPolicy: {{ .Values.crosslinkingApi.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.crosslinkingApi.resources | nindent 12 }}
           ports:
             - containerPort: 8080
           volumeMounts:
@@ -69,3 +83,5 @@ spec:
     - protocol: TCP
       port: 8080
       targetPort: 8080
+
+  type: {{ .Values.crosslinkingApi.service.type }}

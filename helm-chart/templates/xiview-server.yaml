@@ -8,7 +8,7 @@ data:
     host=postgresql-service
     database=crosslinking
     user=xiadmin
-    password=your_password_here
+    password={{ .Values.auth.db_password }}
     port=5432
 ---
 apiVersion: apps/v1
@@ -18,7 +18,7 @@ metadata:
   labels:
     app: xiview-server
 spec:
-  replicas: 1
+  replicas: {{ .Values.xiviewServer.replicaCount }}
   selector:
     matchLabels:
       app: xiview-server
@@ -34,10 +34,24 @@ spec:
             items:
               - key: database.ini
                 path: database.ini
+      {{- with .Values.xiviewServer.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.xiviewServer.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.xiviewServer.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: xiview-server
           image: rappsilberlab/xiview-server:2026-03-20
-          imagePullPolicy: Always
+          imagePullPolicy: {{ .Values.xiviewServer.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.xiviewServer.resources | nindent 12 }}
           ports:
             - containerPort: 8080
           env:

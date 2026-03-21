@@ -17,8 +17,10 @@ spec:
                 path: database.ini
       containers:
         - name: db-init
-          image: rappsilberlab/xiview-upload-api:2026-03-20
-          imagePullPolicy: Always
+          image: "{{ .Values.global.imageRegistry }}/{{ .Values.xiviewUploadApi.image.repository }}:{{ .Values.xiviewUploadApi.image.tag }}"
+          imagePullPolicy: {{ .Values.xiviewUploadApi.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
           command: ["sh", "-c", "PYTHONPATH=/home/appuser python parser/database/create_db_schema.py"]
           env:
             - name: DB_CONFIG
@@ -28,4 +30,4 @@ spec:
               mountPath: /home/appuser/database.ini
               subPath: database.ini
               readOnly: true
-      restartPolicy: OnFailure
+      restartPolicy: Never

@@ -1,0 +1,142 @@
+# Global Shared Variables
+global:
+  imageRegistry: "rappsilberlab"
+  imagePullSecrets: []
+
+# Base Authentication Configs
+auth:
+  api_key: "your_api_key_here"
+  db_password: "your_secure_db_password"
+  redis_password: "your_secure_redis_password"
+
+# Ingress Network Mapping
+ingress:
+  enabled: true
+  host: "xiview.local"
+  className: "nginx"
+  annotations: {}
+  tls:
+    enabled: false
+    secretName: "xiview-tls-secret"
+
+# -------------------------------
+# Core Microservices
+# -------------------------------
+xiviewFrontend:
+  replicaCount: 1
+  image:
+    repository: "xiview-frontend"
+    tag: "2026-03-20"
+    pullPolicy: IfNotPresent
+  
+  service:
+    type: ClusterIP
+    port: 80
+
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  podAnnotations: {}
+
+xiviewServer:
+  replicaCount: 1
+  image:
+    repository: "xiview-server"
+    tag: "2026-03-20"
+    pullPolicy: IfNotPresent
+  
+  service:
+    type: ClusterIP
+    port: 80
+
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  podAnnotations: {}
+
+crosslinkingApi:
+  replicaCount: 1
+  image:
+    repository: "crosslinking-api"
+    tag: "2026-03-20"
+    pullPolicy: IfNotPresent
+  
+  service:
+    type: ClusterIP
+    port: 8080
+
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  podAnnotations: {}
+
+xiviewUploadApi:
+  replicaCount: 1
+  image:
+    repository: "xiview-upload-api"
+    tag: "2026-03-20"
+    pullPolicy: IfNotPresent
+  
+  service:
+    type: ClusterIP
+    port: 8090
+
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  podAnnotations: {}
+
+mzidentmlReader:
+  image:
+    repository: "mzidentml-reader"
+    tag: "2026-03-20"
+    pullPolicy: IfNotPresent
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  podAnnotations: {}
+
+postgres:
+  replicaCount: 1
+  image:
+    repository: "postgres"
+    tag: "15-alpine"
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 5432
+  persistence:
+    enabled: true
+    size: 10Gi
+    accessMode: ReadWriteOnce
+    # storageClass: "standard"
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  podAnnotations: {}
+
+redis:
+  replicaCount: 1
+  image:
+    repository: "redis"
+    tag: "alpine"
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 6379
+  persistence:
+    enabled: false
+    size: 5Gi
+    accessMode: ReadWriteOnce
+    # storageClass: "standard"
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  podAnnotations: {}

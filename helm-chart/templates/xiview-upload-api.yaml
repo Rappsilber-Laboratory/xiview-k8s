@@ -5,7 +5,7 @@ metadata:
   labels:
     app: xiview-upload-api
 spec:
-  replicas: 1
+  replicas: {{ .Values.xiviewUploadApi.replicaCount }}
   selector:
     matchLabels:
       app: xiview-upload-api
@@ -21,10 +21,24 @@ spec:
             items:
               - key: config.ini
                 path: database.ini
+      {{- with .Values.xiviewUploadApi.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.xiviewUploadApi.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.xiviewUploadApi.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: xiview-upload-api
           image: rappsilberlab/xiview-upload-api:2026-03-20
-          imagePullPolicy: Always
+          imagePullPolicy: {{ .Values.xiviewUploadApi.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.xiviewUploadApi.resources | nindent 12 }}
           env:
             - name: DB_CONFIG
               value: "/home/appuser/database.ini"
@@ -47,3 +61,5 @@ spec:
     - protocol: TCP
       port: 8090
       targetPort: 8090
+
+  type: {{ .Values.xiviewUploadApi.service.type }}
