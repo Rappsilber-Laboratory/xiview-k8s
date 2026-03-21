@@ -21,7 +21,7 @@ This stack runs entirely natively inside Kubernetes, orchestrated via standard `
 
 ## Quickstart Deployment via Helm
 
-We utilize a Helm Chart to rapidly deploy and parameterize all components dynamically without needing to alter source `.yaml` files.
+We exclusively use Helm to cleanly deploy, configure, and rapidly parameterize all microservice components dynamically natively on any Kubernetes cluster.
 
 **1. Clone the repository and initialize submodules:**
 ```bash
@@ -30,32 +30,50 @@ cd xiview-stack
 git submodule update --init --recursive
 ```
 
-**2. Configure your Deployment Values:**
-Open `helm-chart/values.yaml` and adjust the variables specifying your Docker Hub repository names, preferred tags, and custom Ingress host URLs.
+**2. Create your Configuration Override (e.g. `k3s-values.yaml`):**
+If you are deploying on a local K3s cluster, you can define a minimal values file that automatically hooks deeply into natively available ingress controllers (like Traefik) and built-in StorageClasses (like `local-path`).
+```yaml
+# k3s-values.yaml
+auth:
+  api_key: "change_me"
+  db_password: "change_me"
+  redis_password: "change_me"
+
+ingress:
+  enabled: true
+  host: "xiview.local"
+  className: "traefik"
+
+postgres:
+  persistence:
+    enabled: true
+    size: 5Gi
+    storageClass: "local-path"
+
+redis:
+  persistence:
+    enabled: false
+```
 
 **3. Install the Deployment Stack:**
-Assuming your Kubernetes cluster (`kubectl`) is currently active, install the generic release name natively:
+Assuming your Kubernetes cluster (`kubectl`) is currently active, install the Helm chart by passing your overrides:
 ```bash
-helm install my-xiview ./helm-chart
+helm install my-xiview ./helm-chart -f k3s-values.yaml
 ```
-*Note: This command provisions the complete Postgres layer, installs the crosslinking indexing services, and binds the generic frontend to your chosen Traefik Ingress routes automatically.*
+*Note: This command provisions the complete Postgres layer, resolves the backend microservices securely, and automatically binds the generic frontend GUI seamlessly to your chosen Ingress routes.*
 
 **Upgrading or Rolling Actions:**
-If you change `values.yaml` or rebuild container components, seamlessly push the upgrade logic via Helm:
+If you rebuild container artifacts or tweak your configuration, seamlessly push the upgrade natively via Helm across the entire stack:
 ```bash
-helm upgrade my-xiview ./helm-chart
+helm upgrade my-xiview ./helm-chart -f k3s-values.yaml
 ```
 
-**Why is the Ingress setup so complex?**
-The xiVIEW architecture uses submodules that were originally built to interface directly with EBI PRIDE's public `.org` HTTP endpoint structures. Instead of modifying each submodule's source code to utilize new internal DNS paths, our cluster safely emulates the exact EBI namespace dynamically. 
-The Ingress rules ensure that broad requests pointing to `/pride` correctly hit the database querying service (`crosslinking-api`), while highly-specific exact matches like `/pride/ws/.../upload_local` safely bypass the database and perfectly filter into your file processing service (`xiview-upload-api`). The remaining visualization static assets scale backwards seamlessly from the legacy `.html` engines.
+## Architecture Notes
+The xiVIEW suite leverages highly specialized ingress mappings to effectively emulate legacy EBI endpoints natively across internal cluster DNS routing. Static frontend nodes scale perfectly without requiring manual HTTP redirects inside source code!
 
 ## Creating Custom Docker Containers
-The deployment YAML files currently pull from `rappsilberlab` docker-hub repositories. If you would like to edit the Python/React codebase uniquely or compile fresh artifacts locally natively:
+The Helm chart defaults to pulling edge-images directly from the `rappsilberlab` docker-hub repositories natively. If you compile fresh custom source-code artifacts locally:
 ```bash
-docker build -t rappsilberlab/xiview-frontend:2026-03-20 -f Dockerfile.xiview-frontend .
+docker build -t rappsilberlab/xiview-frontend:custom -f Dockerfile.xiview-frontend .
 ```
-*(Repeat for `Dockerfile.crosslinking-api`, `Dockerfile.xiview-server`, `Dockerfile.xiview-upload-api`, and `Dockerfile.mzidentml-reader`).*
-
-## Security
-The `/pride` backend namespace utilizes simulated endpoints to fulfill exact EBI API requirements dynamically. All crosslinking uploads will live privately inside your isolated local Postgres volume storage unshared.
+*(You can effortlessly point the Helm chart to your custom `:custom` tags dynamically by just modifying the `.Values.xiviewFrontend.image.tag` inside your values file!)*
