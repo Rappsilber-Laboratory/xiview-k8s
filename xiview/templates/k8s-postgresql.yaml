@@ -1,13 +1,18 @@
+{{- if .Values.postgres.persistence.enabled }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: postgresql-pvc
 spec:
   accessModes:
-    - ReadWriteOnce
+    - {{ .Values.postgres.persistence.accessMode }}
+  {{- if .Values.postgres.persistence.storageClass }}
+  storageClassName: {{ .Values.postgres.persistence.storageClass }}
+  {{- end }}
   resources:
     requests:
-      storage: 10Gi
+      storage: {{ .Values.postgres.persistence.size }}
+{{- end }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -27,7 +32,7 @@ spec:
     spec:
       containers:
         - name: postgresql
-          image: postgres:15
+          image: {{ .Values.postgres.image }}
           ports:
             - containerPort: 5432
           env:
@@ -37,13 +42,17 @@ spec:
               value: "xiadmin"
             - name: POSTGRES_PASSWORD
               value: "{{ .Values.auth.db_password }}"
+          {{- if .Values.postgres.persistence.enabled }}
           volumeMounts:
             - name: postgresql-storage
               mountPath: /var/lib/postgresql/data
+          {{- end }}
+      {{- if .Values.postgres.persistence.enabled }}
       volumes:
         - name: postgresql-storage
           persistentVolumeClaim:
             claimName: postgresql-pvc
+      {{- end }}
 ---
 apiVersion: v1
 kind: Service

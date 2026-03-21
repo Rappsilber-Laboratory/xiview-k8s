@@ -45,10 +45,22 @@ xiviewUploadApi:
 mzidentmlReader:
   resources: {}
 
+
+
 postgres:
   image: "postgres:15-alpine"
   resources: {}
+  persistence:
+    enabled: true
+    size: 10Gi
+    accessMode: ReadWriteOnce
+    # storageClass: "-"
 
 redis:
   image: "redis:alpine"
   resources: {}
+  persistence:
+    enabled: false
+    size: 5Gi
+    accessMode: ReadWriteOnce
+    # storageClass: "-"

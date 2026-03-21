@@ -1,3 +1,19 @@
+{{- if .Values.redis.persistence.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: redis-pvc
+spec:
+  accessModes:
+    - {{ .Values.redis.persistence.accessMode }}
+  {{- if .Values.redis.persistence.storageClass }}
+  storageClassName: {{ .Values.redis.persistence.storageClass }}
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.redis.persistence.size }}
+---
+{{- end }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -16,10 +32,21 @@ spec:
     spec:
       containers:
         - name: redis
-          image: redis:7
+          image: {{ .Values.redis.image }}
           command: ["redis-server", "--requirepass", "{{ .Values.auth.redis_password }}"]
           ports:
             - containerPort: 6379
+          {{- if .Values.redis.persistence.enabled }}
+          volumeMounts:
+            - name: redis-storage
+              mountPath: /data
+          {{- end }}
+      {{- if .Values.redis.persistence.enabled }}
+      volumes:
+        - name: redis-storage
+          persistentVolumeClaim:
+            claimName: redis-pvc
+      {{- end }}
 ---
 apiVersion: v1
 kind: Service
