@@ -31,19 +31,19 @@ git submodule update --init --recursive
 ```
 
 **2. Configure your Deployment Values:**
-Open `xiview/values.yaml` and adjust the variables specifying your Docker Hub repository names, preferred tags, and custom Ingress host URLs.
+Open `helm-chart/values.yaml` and adjust the variables specifying your Docker Hub repository names, preferred tags, and custom Ingress host URLs.
 
 **3. Install the Deployment Stack:**
 Assuming your Kubernetes cluster (`kubectl`) is currently active, install the generic release name natively:
 ```bash
-helm install my-xiview ./xiview
+helm install my-xiview ./helm-chart
 ```
 *Note: This command provisions the complete Postgres layer, installs the crosslinking indexing services, and binds the generic frontend to your chosen Traefik Ingress routes automatically.*
 
 **Upgrading or Rolling Actions:**
 If you change `values.yaml` or rebuild container components, seamlessly push the upgrade logic via Helm:
 ```bash
-helm upgrade my-xiview ./xiview
+helm upgrade my-xiview ./helm-chart
 ```
 
 **Why is the Ingress setup so complex?**
