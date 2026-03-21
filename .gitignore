@@ -1,2 +1,3 @@
 k8s-xiview-ingress.yaml
 k8s-basic-auth.yaml
+debug*.yaml
