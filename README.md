@@ -2,17 +2,6 @@
 
 This repository contains the deployment configurations and orchestration submodules required to host your own full-stack instance of **xiVIEW**—a platform for the downstream analysis of cross-linking mass spectrometry data.
 
-## Architecture
-
-This stack runs entirely natively inside Kubernetes, orchestrated via standard `.yaml` manifests utilizing Docker containers. It sets up 6 distinct microservices to cleanly map and digest crosslinking data securely:
-
-1. **`xiview-frontend`**: The modern React-based UI allowing users to aggregate `mzIdentML` (.mzid) formats alongside mass spectra files (.mzML).
-2. **`xiview-server`**: The legacy JavaScript rendering visualization engine bridging complex node networks and 3D Structure mapping.
-3. **`xiview-upload-api`**: Manages file caching and routes `.mzIdentML` schemas into DB structures utilizing Pyteomics readers.
-4. **`crosslinking-api`**: Exposes read access mapping `spectrum`, `peptides`, and `crosslinks` from PostgreSQL natively to the visualization engine without polling EBI.
-5. **`mzidentml-reader`**: Python processor tasked with ripping heavy `.mzIdentML` trees gracefully into normalized DB rows.
-6. **`postgresql-service`**: Highly available data-layer housing your crosslinking datasets cleanly.
-
 ## Prerequisites
 
 - A running Kubernetes cluster (e.g. k3s, minikube, or EKS).
@@ -66,6 +55,17 @@ If you rebuild container artifacts or tweak your configuration, seamlessly push 
 ```bash
 helm upgrade my-xiview xiview-repo/xiview-stack -f k3s-values.yaml
 ```
+
+## Architecture
+
+This stack runs entirely natively inside Kubernetes, orchestrated via standard `.yaml` manifests utilizing Docker containers. It sets up 6 distinct microservices to cleanly map and digest crosslinking data securely:
+
+1. **`xiview-frontend`**: The modern React-based UI allowing users to aggregate `mzIdentML` (.mzid) formats alongside mass spectra files (.mzML).
+2. **`xiview-server`**: The legacy JavaScript rendering visualization engine bridging complex node networks and 3D Structure mapping.
+3. **`xiview-upload-api`**: Manages file caching and routes `.mzIdentML` schemas into DB structures utilizing Pyteomics readers.
+4. **`crosslinking-api`**: Exposes read access mapping `spectrum`, `peptides`, and `crosslinks` from PostgreSQL natively to the visualization engine without polling EBI.
+5. **`mzidentml-reader`**: Python processor tasked with ripping heavy `.mzIdentML` trees gracefully into normalized DB rows.
+6. **`postgresql-service`**: Highly available data-layer housing your crosslinking datasets cleanly.
 
 ## Architecture Notes
 The xiVIEW suite leverages highly specialized ingress mappings to effectively emulate legacy EBI endpoints natively across internal cluster DNS routing. Static frontend nodes scale perfectly without requiring manual HTTP redirects inside source code!
