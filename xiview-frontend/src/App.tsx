@@ -2,10 +2,12 @@ import { useState, useEffect } from 'react';
 import { UploadCloud, Database } from 'lucide-react';
 import UploadPage from './pages/UploadPage';
 import HistoryPage from './pages/HistoryPage';
+import NetworkPage from './pages/NetworkPage';
 
 function App() {
   const [activeTab, setActiveTab] = useState(() => {
     const hash = window.location.hash.replace('#', '');
+    if (hash.startsWith('network')) return hash;
     return hash === 'history' ? 'history' : 'upload';
   });
 
@@ -16,7 +18,7 @@ function App() {
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash.replace('#', '');
-      if (hash === 'history' || hash === 'upload') {
+      if (hash === 'history' || hash === 'upload' || hash.startsWith('network')) {
         setActiveTab(hash);
       }
     };
@@ -55,9 +57,10 @@ function App() {
       </aside>
 
       {/* Main Content Area */}
-      <main className="main-content">
+      <main className="main-content" style={activeTab.startsWith('network') ? { padding: 0, display: 'flex', flexDirection: 'column' } : {}}>
         {activeTab === 'upload' && <UploadPage />}
         {activeTab === 'history' && <HistoryPage />}
+        {activeTab.startsWith('network') && <NetworkPage />}
       </main>
     </div>
   );

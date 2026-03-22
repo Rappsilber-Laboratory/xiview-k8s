@@ -88,11 +88,9 @@ export default function HistoryPage() {
                   <td>
                     <div style={{ display: 'flex', gap: '0.5rem' }}>
                       <a 
-                        href={`/network.html?project=${ds.id}&file=${ds.name}`} 
+                        href={`#network?project=${ds.id}&file=${encodeURIComponent(ds.name)}`} 
                         className="action-btn view" 
                         title="View in xiVIEW"
-                        target="_blank"
-                        rel="noreferrer"
                         style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', textDecoration: 'none' }}
                       >
                         <Eye size={18} />

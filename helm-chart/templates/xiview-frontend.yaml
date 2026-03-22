@@ -28,7 +28,7 @@ spec:
       {{- end }}
       containers:
         - name: xiview-frontend
-          image: rappsilberlab/xiview-frontend:2026-03-20
+          image: "{{ .Values.xiviewFrontend.image.repository }}:{{ .Values.xiviewFrontend.image.tag }}"
           imagePullPolicy: {{ .Values.xiviewFrontend.image.pullPolicy }}
           resources:
             {{- toYaml .Values.xiviewFrontend.resources | nindent 12 }}
