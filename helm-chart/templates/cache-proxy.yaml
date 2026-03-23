@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: cache-proxy
-          image: {{ .Values.cacheProxy.image.repository }}:{{ .Values.cacheProxy.image.tag }}
+          image: "{{ if .Values.global.imageRegistry }}{{ .Values.global.imageRegistry }}/{{ end }}{{ .Values.cacheProxy.image.repository }}:{{ .Values.cacheProxy.image.tag }}"
           imagePullPolicy: Always
           ports:
             - containerPort: 8000

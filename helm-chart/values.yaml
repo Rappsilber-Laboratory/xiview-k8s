@@ -26,7 +26,7 @@ xiviewFrontend:
   replicaCount: 1
   image:
     repository: "xiview-frontend"
-    tag: "2026-03-20"
+    tag: "2026-03-23"
     pullPolicy: IfNotPresent
   
   service:
@@ -145,4 +145,4 @@ cacheProxy:
   enabled: true
   image:
     repository: "cache-proxy"
-    tag: "latest"
+    tag: "2026-03-23"
