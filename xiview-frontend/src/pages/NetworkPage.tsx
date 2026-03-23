@@ -1,4 +1,4 @@
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, ExternalLink } from 'lucide-react';
 
 export default function NetworkPage() {
   // Parse project and file from query parameters
@@ -24,6 +24,18 @@ export default function NetworkPage() {
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           <h2 style={{ fontSize: '1.2rem', margin: 0, color: 'var(--accent-color)' }}>xiVIEW Network</h2>
           {(file || project) && <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Dataset: {file} (Project: {project})</span>}
+        </div>
+        <div style={{ marginLeft: 'auto' }}>
+          <a
+            href={iframeSrc}
+            target="_blank"
+            rel="noreferrer"
+            className="action-btn view"
+            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', background: '#dbeafe', color: '#2563eb', fontWeight: 500, textDecoration: 'none', borderRadius: '4px' }}
+          >
+            <ExternalLink size={18} />
+            Open in New Tab
+          </a>
         </div>
       </div>
       
