@@ -47,14 +47,8 @@ async def proxy_request(request: Request, full_path: str):
     
     body = await request.body()
     
-    # We want to cache specific paths: networks and annotations
-    cacheable_paths = [
-        "get_xiview_matches", 
-        "get_xiview_peptides", 
-        "get_xiview_proteins", 
-        "get_annotated_peaklist"
-    ]
-    should_cache = any(p in full_path for p in cacheable_paths) and method in ["GET", "POST"]
+    # We want to cache specific paths: all network components and annotations
+    should_cache = ("get_xiview_" in full_path or "get_annotated_peaklist" in full_path) and method in ["GET", "POST"]
     
     cache_key = None
     if should_cache:
