@@ -19,6 +19,18 @@ ingress:
     enabled: false
     secretName: "xiview-tls-secret"
 
+traefikRoute:
+  enabled: false
+  host: "xiview.local"
+  entryPoints:
+    - web
+    - websecure
+  middlewares: []
+  annotations: {}
+  tls:
+    enabled: false
+    secretName: "xiview-tls-secret"
+
 # -------------------------------
 # Core Microservices
 # -------------------------------

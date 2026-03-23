@@ -1,0 +1,142 @@
+{{- if .Values.traefikRoute.enabled -}}
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: xiview-ingress-route
+  labels:
+    app: xiview-stack
+  annotations:
+    {{- if .Values.traefikRoute.annotations }}
+    {{- toYaml .Values.traefikRoute.annotations | nindent 4 }}
+    {{- end }}
+spec:
+  entryPoints:
+    {{- toYaml .Values.traefikRoute.entryPoints | nindent 4 }}
+  {{- if .Values.traefikRoute.tls.enabled }}
+  tls:
+    secretName: {{ .Values.traefikRoute.tls.secretName }}
+  {{- end }}
+  routes:
+    - match: Host(`{{ .Values.traefikRoute.host }}`) && Path(`/pride/ws/archive/crosslinking/v3/upload_local`)
+      kind: Rule
+      {{- if .Values.traefikRoute.middlewares }}
+      middlewares:
+        {{- toYaml .Values.traefikRoute.middlewares | nindent 8 }}
+      {{- end }}
+      services:
+        - name: xiview-upload-api-service
+          port: 8090
+    - match: Host(`{{ .Values.traefikRoute.host }}`) && PathPrefix(`/pride`)
+      kind: Rule
+      {{- if .Values.traefikRoute.middlewares }}
+      middlewares:
+        {{- toYaml .Values.traefikRoute.middlewares | nindent 8 }}
+      {{- end }}
+      services:
+        {{- if .Values.cacheProxy.enabled }}
+        - name: cache-proxy-service
+          port: 8000
+        {{- else }}
+        - name: crosslinking-api-service
+          port: 8080
+        {{- end }}
+    - match: Host(`{{ .Values.traefikRoute.host }}`) && Path(`/network.html`)
+      kind: Rule
+      {{- if .Values.traefikRoute.middlewares }}
+      middlewares:
+        {{- toYaml .Values.traefikRoute.middlewares | nindent 8 }}
+      {{- end }}
+      services:
+        - name: xiview-server-service
+          port: 80
+    - match: Host(`{{ .Values.traefikRoute.host }}`) && Path(`/spectra.html`)
+      kind: Rule
+      {{- if .Values.traefikRoute.middlewares }}
+      middlewares:
+        {{- toYaml .Values.traefikRoute.middlewares | nindent 8 }}
+      {{- end }}
+      services:
+        - name: xiview-server-service
+          port: 80
+    - match: Host(`{{ .Values.traefikRoute.host }}`) && Path(`/xiview.js`)
+      kind: Rule
+      {{- if .Values.traefikRoute.middlewares }}
+      middlewares:
+        {{- toYaml .Values.traefikRoute.middlewares | nindent 8 }}
+      {{- end }}
+      services:
+        - name: xiview-server-service
+          port: 80
+    - match: Host(`{{ .Values.traefikRoute.host }}`) && Path(`/vendors.js`)
+      kind: Rule
+      {{- if .Values.traefikRoute.middlewares }}
+      middlewares:
+        {{- toYaml .Values.traefikRoute.middlewares | nindent 8 }}
+      {{- end }}
+      services:
+        - name: xiview-server-service
+          port: 80
+    - match: Host(`{{ .Values.traefikRoute.host }}`) && Path(`/xiview-pride.css`)
+      kind: Rule
+      {{- if .Values.traefikRoute.middlewares }}
+      middlewares:
+        {{- toYaml .Values.traefikRoute.middlewares | nindent 8 }}
+      {{- end }}
+      services:
+        - name: xiview-server-service
+          port: 80
+    - match: Host(`{{ .Values.traefikRoute.host }}`) && PathPrefix(`/images`)
+      kind: Rule
+      {{- if .Values.traefikRoute.middlewares }}
+      middlewares:
+        {{- toYaml .Values.traefikRoute.middlewares | nindent 8 }}
+      {{- end }}
+      services:
+        - name: xiview-server-service
+          port: 80
+    - match: Host(`{{ .Values.traefikRoute.host }}`) && PathPrefix(`/Lato`)
+      kind: Rule
+      {{- if .Values.traefikRoute.middlewares }}
+      middlewares:
+        {{- toYaml .Values.traefikRoute.middlewares | nindent 8 }}
+      {{- end }}
+      services:
+        - name: xiview-server-service
+          port: 80
+    - match: Host(`{{ .Values.traefikRoute.host }}`) && PathPrefix(`/fontawesome`)
+      kind: Rule
+      {{- if .Values.traefikRoute.middlewares }}
+      middlewares:
+        {{- toYaml .Values.traefikRoute.middlewares | nindent 8 }}
+      {{- end }}
+      services:
+        - name: xiview-server-service
+          port: 80
+    - match: Host(`{{ .Values.traefikRoute.host }}`) && PathPrefix(`/R`)
+      kind: Rule
+      {{- if .Values.traefikRoute.middlewares }}
+      middlewares:
+        {{- toYaml .Values.traefikRoute.middlewares | nindent 8 }}
+      {{- end }}
+      services:
+        - name: xiview-server-service
+          port: 80
+    - match: Host(`{{ .Values.traefikRoute.host }}`) && PathPrefix(`/docs`)
+      kind: Rule
+      {{- if .Values.traefikRoute.middlewares }}
+      middlewares:
+        {{- toYaml .Values.traefikRoute.middlewares | nindent 8 }}
+      {{- end }}
+      services:
+        - name: xiview-server-service
+          port: 80
+    - match: Host(`{{ .Values.traefikRoute.host }}`) && PathPrefix(`/`)
+      kind: Rule
+      {{- if .Values.traefikRoute.middlewares }}
+      middlewares:
+        {{- toYaml .Values.traefikRoute.middlewares | nindent 8 }}
+      {{- end }}
+      services:
+        - name: xiview-frontend-service
+          port: 80
+{{- end -}}
