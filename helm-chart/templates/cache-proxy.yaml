@@ -1,0 +1,42 @@
+{{- if .Values.cacheProxy.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cache-proxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cache-proxy
+  template:
+    metadata:
+      labels:
+        app: cache-proxy
+    spec:
+      containers:
+        - name: cache-proxy
+          image: {{ .Values.cacheProxy.image.repository }}:{{ .Values.cacheProxy.image.tag }}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000
+          env:
+            - name: REDIS_HOST
+              value: "cache-redis-service"
+            - name: TARGET_URL
+              value: "http://crosslinking-api-service:8080"
+            - name: CACHE_SIZE
+              value: "1gb"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cache-proxy-service
+spec:
+  selector:
+    app: cache-proxy
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+  type: ClusterIP
+{{- end -}}

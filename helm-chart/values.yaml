@@ -140,3 +140,9 @@ redis:
   tolerations: []
   affinity: {}
   podAnnotations: {}
+
+cacheProxy:
+  enabled: true
+  image:
+    repository: "cache-proxy"
+    tag: "latest"
