@@ -22,7 +22,7 @@ spec:
       {{- end }}
       containers:
       - name: mzidentml-reader
-        image: "{{ .Values.global.imageRegistry }}/{{ .Values.mzidentmlReader.image.repository }}:{{ .Values.mzidentmlReader.image.tag }}"
+        image: "{{ if .Values.global.imageRegistry }}{{ .Values.global.imageRegistry }}/{{ end }}{{ .Values.mzidentmlReader.image.repository }}:{{ .Values.mzidentmlReader.image.tag }}"
         imagePullPolicy: {{ .Values.mzidentmlReader.image.pullPolicy }}
         args: ["-h"]
       restartPolicy: Never

@@ -26,6 +26,10 @@ spec:
               value: "http://crosslinking-api-service:8080"
             - name: CACHE_SIZE
               value: "1gb"
+            {{- if .Values.cacheProxy.ttl }}
+            - name: CACHE_TTL
+              value: {{ .Values.cacheProxy.ttl | quote }}
+            {{- end }}
 ---
 apiVersion: v1
 kind: Service

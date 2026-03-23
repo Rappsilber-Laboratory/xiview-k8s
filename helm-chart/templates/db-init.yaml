@@ -17,7 +17,7 @@ spec:
                 path: database.ini
       containers:
         - name: db-init
-          image: "{{ .Values.global.imageRegistry }}/{{ .Values.xiviewUploadApi.image.repository }}:{{ .Values.xiviewUploadApi.image.tag }}"
+          image: "{{ if .Values.global.imageRegistry }}{{ .Values.global.imageRegistry }}/{{ end }}{{ .Values.xiviewUploadApi.image.repository }}:{{ .Values.xiviewUploadApi.image.tag }}"
           imagePullPolicy: {{ .Values.xiviewUploadApi.image.pullPolicy }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

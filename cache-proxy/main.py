@@ -17,7 +17,7 @@ REDIS_PORT = int(os.getenv("REDIS_PORT", "6379"))
 REDIS_PASSWORD = os.getenv("REDIS_PASSWORD", "")
 CACHE_SIZE = os.getenv("CACHE_SIZE", "1gb") 
 TARGET_URL = os.getenv("TARGET_URL", "http://crosslinking-api-service:8080")
-CACHE_TTL = 86400  # 24 hours
+CACHE_TTL = int(os.getenv("CACHE_TTL", "0"))  # 0 means infinite completely relying on LRU
 
 # Initialize Redis client
 redis_client = redis.Redis(
@@ -84,8 +84,12 @@ async def proxy_request(request: Request, full_path: str):
     # Cache successful responses for cacheable paths
     if should_cache and proxy_res.status_code == 200:
         try:
-            await redis_client.setex(cache_key, CACHE_TTL, res_body)
-            logger.info(f"Cache SET for {full_path} (TTL: {CACHE_TTL}s)")
+            if CACHE_TTL > 0:
+                await redis_client.setex(cache_key, CACHE_TTL, res_body)
+                logger.info(f"Cache SET for {full_path} (TTL: {CACHE_TTL}s)")
+            else:
+                await redis_client.set(cache_key, res_body)
+                logger.info(f"Cache SET for {full_path} (Infinite until LRU)")
         except Exception as e:
             logger.warning(f"Redis set error: {e}")
 
