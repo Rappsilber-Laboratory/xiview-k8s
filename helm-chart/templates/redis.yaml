@@ -34,6 +34,10 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     spec:
+      {{- with .Values.redis.pullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- with .Values.redis.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -48,7 +52,7 @@ spec:
       {{- end }}
       containers:
         - name: redis
-          image: "{{ .Values.redis.image.repository }}:{{ .Values.redis.image.tag }}"
+          image: "{{ if .Values.redis.image.registry }}{{ .Values.redis.image.registry }}/{{ end }}{{ if .Values.redis.image.repository }}{{ .Values.redis.image.repository }}/{{ end }}{{ .Values.redis.image.name }}:{{ .Values.redis.image.tag }}"
           imagePullPolicy: {{ .Values.redis.image.pullPolicy }}
           command: ["redis-server", "--requirepass", "{{ .Values.auth.redis_password }}"]
           ports:

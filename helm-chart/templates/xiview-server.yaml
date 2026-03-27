@@ -27,6 +27,10 @@ spec:
       labels:
         app: xiview-server
     spec:
+      {{- with .Values.xiviewServer.pullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       volumes:
         - name: application-db-config
           configMap:
@@ -48,7 +52,7 @@ spec:
       {{- end }}
       containers:
         - name: xiview-server
-          image: "{{ if .Values.global.imageRegistry }}{{ .Values.global.imageRegistry }}/{{ end }}{{ .Values.xiviewServer.image.repository }}:{{ .Values.xiviewServer.image.tag }}"
+          image: "{{ if .Values.xiviewServer.image.registry }}{{ .Values.xiviewServer.image.registry }}/{{ end }}{{ if .Values.xiviewServer.image.repository }}{{ .Values.xiviewServer.image.repository }}/{{ end }}{{ .Values.xiviewServer.image.name }}:{{ .Values.xiviewServer.image.tag }}"
           imagePullPolicy: {{ .Values.xiviewServer.image.pullPolicy }}
           resources:
             {{- toYaml .Values.xiviewServer.resources | nindent 12 }}

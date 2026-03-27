@@ -34,6 +34,10 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     spec:
+      {{- with .Values.postgres.pullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- with .Values.postgres.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -48,7 +52,7 @@ spec:
       {{- end }}
       containers:
         - name: postgresql
-          image: "{{ .Values.postgres.image.repository }}:{{ .Values.postgres.image.tag }}"
+          image: "{{ if .Values.postgres.image.registry }}{{ .Values.postgres.image.registry }}/{{ end }}{{ if .Values.postgres.image.repository }}{{ .Values.postgres.image.repository }}/{{ end }}{{ .Values.postgres.image.name }}:{{ .Values.postgres.image.tag }}"
           imagePullPolicy: {{ .Values.postgres.image.pullPolicy }}
           ports:
             - containerPort: 5432

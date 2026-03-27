@@ -39,6 +39,10 @@ spec:
       labels:
         app: crosslinking-api
     spec:
+      {{- with .Values.crosslinkingApi.pullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       volumes:
         - name: application-db-config
           configMap:
@@ -60,7 +64,7 @@ spec:
       {{- end }}
       containers:
         - name: crosslinking-api
-          image: "{{ if .Values.global.imageRegistry }}{{ .Values.global.imageRegistry }}/{{ end }}{{ .Values.crosslinkingApi.image.repository }}:{{ .Values.crosslinkingApi.image.tag }}"
+          image: "{{ if .Values.crosslinkingApi.image.registry }}{{ .Values.crosslinkingApi.image.registry }}/{{ end }}{{ if .Values.crosslinkingApi.image.repository }}{{ .Values.crosslinkingApi.image.repository }}/{{ end }}{{ .Values.crosslinkingApi.image.name }}:{{ .Values.crosslinkingApi.image.tag }}"
           imagePullPolicy: {{ .Values.crosslinkingApi.image.pullPolicy }}
           resources:
             {{- toYaml .Values.crosslinkingApi.resources | nindent 12 }}

@@ -8,6 +8,10 @@ spec:
       labels:
         app: mzidentml-reader
     spec:
+      {{- with .Values.mzidentmlReader.pullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- with .Values.mzidentmlReader.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -22,7 +26,7 @@ spec:
       {{- end }}
       containers:
       - name: mzidentml-reader
-        image: "{{ if .Values.global.imageRegistry }}{{ .Values.global.imageRegistry }}/{{ end }}{{ .Values.mzidentmlReader.image.repository }}:{{ .Values.mzidentmlReader.image.tag }}"
+        image: "{{ if .Values.mzidentmlReader.image.registry }}{{ .Values.mzidentmlReader.image.registry }}/{{ end }}{{ if .Values.mzidentmlReader.image.repository }}{{ .Values.mzidentmlReader.image.repository }}/{{ end }}{{ .Values.mzidentmlReader.image.name }}:{{ .Values.mzidentmlReader.image.tag }}"
         imagePullPolicy: {{ .Values.mzidentmlReader.image.pullPolicy }}
         args: ["-h"]
       restartPolicy: Never

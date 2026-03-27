@@ -14,6 +14,10 @@ spec:
       labels:
         app: xiview-frontend
     spec:
+      {{- with .Values.xiviewFrontend.pullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- with .Values.xiviewFrontend.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -28,7 +32,7 @@ spec:
       {{- end }}
       containers:
         - name: xiview-frontend
-          image: "{{ if .Values.global.imageRegistry }}{{ .Values.global.imageRegistry }}/{{ end }}{{ .Values.xiviewFrontend.image.repository }}:{{ .Values.xiviewFrontend.image.tag }}"
+          image: "{{ if .Values.xiviewFrontend.image.registry }}{{ .Values.xiviewFrontend.image.registry }}/{{ end }}{{ if .Values.xiviewFrontend.image.repository }}{{ .Values.xiviewFrontend.image.repository }}/{{ end }}{{ .Values.xiviewFrontend.image.name }}:{{ .Values.xiviewFrontend.image.tag }}"
           imagePullPolicy: {{ .Values.xiviewFrontend.image.pullPolicy }}
           resources:
             {{- toYaml .Values.xiviewFrontend.resources | nindent 12 }}

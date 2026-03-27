@@ -1,8 +1,3 @@
-# Global Shared Variables
-global:
-  imageRegistry: "rappsilberlab"
-  imagePullSecrets: []
-
 # Base Authentication Configs
 auth:
   api_key: "your_api_key_here"
@@ -37,9 +32,12 @@ traefikRoute:
 xiviewFrontend:
   replicaCount: 1
   image:
-    repository: "xiview-frontend"
+    registry: ""
+    repository: "rappsilberlab"
+    name: "xiview-frontend"
     tag: "latest"
     pullPolicy: IfNotPresent
+  pullSecrets: []
   
   service:
     type: ClusterIP
@@ -54,9 +52,12 @@ xiviewFrontend:
 xiviewServer:
   replicaCount: 1
   image:
-    repository: "xiview-server"
+    registry: ""
+    repository: "rappsilberlab"
+    name: "xiview-server"
     tag: "latest"
     pullPolicy: IfNotPresent
+  pullSecrets: []
   
   service:
     type: ClusterIP
@@ -71,9 +72,12 @@ xiviewServer:
 crosslinkingApi:
   replicaCount: 1
   image:
-    repository: "crosslinking-api"
+    registry: ""
+    repository: "rappsilberlab"
+    name: "crosslinking-api"
     tag: "latest"
     pullPolicy: IfNotPresent
+  pullSecrets: []
   
   service:
     type: ClusterIP
@@ -88,9 +92,12 @@ crosslinkingApi:
 xiviewUploadApi:
   replicaCount: 1
   image:
-    repository: "xiview-upload-api"
+    registry: ""
+    repository: "rappsilberlab"
+    name: "xiview-upload-api"
     tag: "latest"
     pullPolicy: IfNotPresent
+  pullSecrets: []
   
   service:
     type: ClusterIP
@@ -104,9 +111,12 @@ xiviewUploadApi:
 
 mzidentmlReader:
   image:
-    repository: "mzidentml-reader"
+    registry: ""
+    repository: "rappsilberlab"
+    name: "mzidentml-reader"
     tag: "latest"
     pullPolicy: IfNotPresent
+  pullSecrets: []
   resources: {}
   nodeSelector: {}
   tolerations: []
@@ -116,9 +126,12 @@ mzidentmlReader:
 postgres:
   replicaCount: 1
   image:
-    repository: "postgres"
+    registry: ""
+    repository: ""
+    name: "postgres"
     tag: "15-alpine"
     pullPolicy: IfNotPresent
+  pullSecrets: []
   service:
     type: ClusterIP
     port: 5432
@@ -136,9 +149,12 @@ postgres:
 redis:
   replicaCount: 1
   image:
-    repository: "redis"
+    registry: ""
+    repository: ""
+    name: "redis"
     tag: "alpine"
     pullPolicy: IfNotPresent
+  pullSecrets: []
   service:
     type: ClusterIP
     port: 6379
@@ -156,6 +172,10 @@ redis:
 cacheProxy:
   enabled: true
   image:
-    repository: "cache-proxy"
+    registry: ""
+    repository: "rappsilberlab"
+    name: "cache-proxy"
     tag: "latest"
+    pullPolicy: IfNotPresent
+  pullSecrets: []
   ttl: 0

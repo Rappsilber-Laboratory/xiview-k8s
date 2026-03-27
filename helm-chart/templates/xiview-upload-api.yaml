@@ -14,6 +14,10 @@ spec:
       labels:
         app: xiview-upload-api
     spec:
+      {{- with .Values.xiviewUploadApi.pullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       volumes:
         - name: application-db-config
           configMap:
@@ -35,7 +39,7 @@ spec:
       {{- end }}
       containers:
         - name: xiview-upload-api
-          image: "{{ if .Values.global.imageRegistry }}{{ .Values.global.imageRegistry }}/{{ end }}{{ .Values.xiviewUploadApi.image.repository }}:{{ .Values.xiviewUploadApi.image.tag }}"
+          image: "{{ if .Values.xiviewUploadApi.image.registry }}{{ .Values.xiviewUploadApi.image.registry }}/{{ end }}{{ if .Values.xiviewUploadApi.image.repository }}{{ .Values.xiviewUploadApi.image.repository }}/{{ end }}{{ .Values.xiviewUploadApi.image.name }}:{{ .Values.xiviewUploadApi.image.tag }}"
           imagePullPolicy: {{ .Values.xiviewUploadApi.image.pullPolicy }}
           resources:
             {{- toYaml .Values.xiviewUploadApi.resources | nindent 12 }}
