@@ -31,34 +31,6 @@ entries:
     version: 1.3.1
   - apiVersion: v2
     appVersion: "2026-03-20"
-    created: "2026-03-27T11:21:26.449472183Z"
-    description: A comprehensive Helm chart deploying the xiVIEW crosslinking mass
-      spectrometry visualization suite. Includes robust API backends, Redis caching,
-      robust PostgreSQL storage, and React frontends.
-    digest: 2165aa02b04b8ebbebf456c010fc7b0320439fbb27d9388f26cb72fe36a3e915
-    home: https://github.com/Rappsilber-Laboratory/xiview-stack
-    keywords:
-    - proteomics
-    - mass-spectrometry
-    - visualization
-    - cross-linking
-    - crosslinking
-    - biology
-    maintainers:
-    - name: Rappsilber Laboratory
-      url: https://github.com/Rappsilber-Laboratory
-    name: xiview-stack
-    sources:
-    - https://github.com/Rappsilber-Laboratory/xiview-stack
-    - https://github.com/Rappsilber-Laboratory/xiview-frontend
-    - https://github.com/Rappsilber-Laboratory/xiview-server
-    - https://github.com/Rappsilber-Laboratory/mzidentml-reader
-    type: application
-    urls:
-    - https://github.com/Rappsilber-Laboratory/xiview-k8s/releases/download/xiview-stack-1.3.0/xiview-stack-1.3.0.tgz
-    version: 1.3.0
-  - apiVersion: v2
-    appVersion: "2026-03-20"
     created: "2026-03-23T15:18:04.658285481Z"
     description: A comprehensive Helm chart deploying the xiVIEW crosslinking mass
       spectrometry visualization suite. Includes robust API backends, Redis caching,
