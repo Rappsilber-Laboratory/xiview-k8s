@@ -48,7 +48,7 @@ spec:
       {{- end }}
       containers:
         - name: xiview-server
-          image: rappsilberlab/xiview-server:2026-03-20
+          image: "{{ if .Values.global.imageRegistry }}{{ .Values.global.imageRegistry }}/{{ end }}{{ .Values.xiviewServer.image.repository }}:{{ .Values.xiviewServer.image.tag }}"
           imagePullPolicy: {{ .Values.xiviewServer.image.pullPolicy }}
           resources:
             {{- toYaml .Values.xiviewServer.resources | nindent 12 }}

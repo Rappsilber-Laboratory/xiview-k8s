@@ -35,7 +35,7 @@ spec:
       {{- end }}
       containers:
         - name: xiview-upload-api
-          image: rappsilberlab/xiview-upload-api:2026-03-20
+          image: "{{ if .Values.global.imageRegistry }}{{ .Values.global.imageRegistry }}/{{ end }}{{ .Values.xiviewUploadApi.image.repository }}:{{ .Values.xiviewUploadApi.image.tag }}"
           imagePullPolicy: {{ .Values.xiviewUploadApi.image.pullPolicy }}
           resources:
             {{- toYaml .Values.xiviewUploadApi.resources | nindent 12 }}

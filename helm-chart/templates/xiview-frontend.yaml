@@ -28,7 +28,7 @@ spec:
       {{- end }}
       containers:
         - name: xiview-frontend
-          image: "{{ .Values.xiviewFrontend.image.repository }}:{{ .Values.xiviewFrontend.image.tag }}"
+          image: "{{ if .Values.global.imageRegistry }}{{ .Values.global.imageRegistry }}/{{ end }}{{ .Values.xiviewFrontend.image.repository }}:{{ .Values.xiviewFrontend.image.tag }}"
           imagePullPolicy: {{ .Values.xiviewFrontend.image.pullPolicy }}
           resources:
             {{- toYaml .Values.xiviewFrontend.resources | nindent 12 }}

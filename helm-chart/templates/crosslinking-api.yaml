@@ -60,7 +60,7 @@ spec:
       {{- end }}
       containers:
         - name: crosslinking-api
-          image: rappsilberlab/crosslinking-api:2026-03-20
+          image: "{{ if .Values.global.imageRegistry }}{{ .Values.global.imageRegistry }}/{{ end }}{{ .Values.crosslinkingApi.image.repository }}:{{ .Values.crosslinkingApi.image.tag }}"
           imagePullPolicy: {{ .Values.crosslinkingApi.image.pullPolicy }}
           resources:
             {{- toYaml .Values.crosslinkingApi.resources | nindent 12 }}
