@@ -17,7 +17,7 @@ export default function UploadPage() {
       const response = await fetch('/pride/ws/archive/crosslinking/v3/upload_local', {
         method: 'POST',
         headers: {
-          'X-API-Key': 'your_api_key'
+          'X-API-Key': (window as any).XIVIEW_CONFIG?.API_KEY || 'your_api_key'
         },
         body: formData
       });

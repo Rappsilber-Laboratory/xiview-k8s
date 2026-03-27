@@ -28,7 +28,7 @@ export default function HistoryPage() {
     try {
       const res = await fetch(`/pride/ws/archive/crosslinking/v3/delete/${id}`, {
         method: 'DELETE',
-        headers: { 'X-API-Key': 'your_api_key' } // Matches k8s-xiview-upload-api settings
+        headers: { 'X-API-Key': (window as any).XIVIEW_CONFIG?.API_KEY || 'your_api_key' } // Dynamic runtime key
       });
       if (res.ok) {
         fetchDatasets();
