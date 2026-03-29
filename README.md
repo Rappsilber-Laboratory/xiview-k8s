@@ -6,7 +6,6 @@ This repository contains the deployment configurations and orchestration submodu
 
 - A running Kubernetes cluster (e.g. k3s, minikube, or EKS).
 - `kubectl` configured with cluster access.
-- Local Docker environment to build standard configurations (`docker buildx`).
 
 ## Quickstart Deployment via Helm
 
