@@ -9,7 +9,7 @@ This repository contains the deployment configurations and orchestration submodu
 
 ## Quickstart Deployment via Helm
 
-We exclusively use Helm to cleanly deploy, configure, and rapidly parameterize all microservice components dynamically natively on any Kubernetes cluster. You don't even need to clone this repository!
+We use Helm to deploy and configure all components. You don't even need to clone this repository!
 
 **1. Add the xiVIEW Helm Repository:**
 ```bash
@@ -18,7 +18,7 @@ helm repo update
 ```
 
 **2. Create your Configuration Override (e.g. `k3s-values.yaml`):**
-If you are deploying on a local K3s cluster, you can define a minimal values file that automatically hooks deeply into natively available ingress controllers (like Traefik) and built-in StorageClasses (like `local-path`).
+If you are deploying on a local K3s cluster, you can define a minimal values file like this for the local-path StorageClass and the Traefik IngressController:
 ```yaml
 # k3s-values.yaml
 auth:
@@ -47,31 +47,20 @@ Assuming your Kubernetes cluster (`kubectl`) is currently active, install the He
 ```bash
 helm install my-xiview xiview-repo/xiview-stack -f k3s-values.yaml
 ```
-*Note: This command provisions the complete Postgres layer, resolves the backend microservices securely, and automatically binds the generic frontend GUI seamlessly to your chosen Ingress routes.*
 
 **Upgrading or Rolling Actions:**
-If you rebuild container artifacts or tweak your configuration, seamlessly push the upgrade natively via Helm across the entire stack:
+If you rebuild container artifacts or tweak your configuration, seamlessly push the upgrade via Helm across the entire stack:
 ```bash
 helm upgrade my-xiview xiview-repo/xiview-stack -f k3s-values.yaml
 ```
 
 ## Architecture
 
-This stack runs entirely natively inside Kubernetes, orchestrated via standard `.yaml` manifests utilizing Docker containers. It sets up 6 distinct microservices to cleanly map and digest crosslinking data securely:
+This stack runs entirely inside Kubernetes. It sets up 6 distinct microservices to map and digest crosslinking data:
 
-1. **`xiview-frontend`**: The modern React-based UI allowing users to aggregate `mzIdentML` (.mzid) formats alongside mass spectra files (.mzML).
-2. **`xiview-server`**: The legacy JavaScript rendering visualization engine bridging complex node networks and 3D Structure mapping.
+1. **`xiview-frontend`**: The React-based UI allowing users to upload `mzIdentML` (.mzid) formats alongside mass spectra files (.mzML).
+2. **`xiview-server`**: The legacy JavaScript rendering visualization engine for node networks and 3D Structure mapping.
 3. **`xiview-upload-api`**: Manages file caching and routes `.mzIdentML` schemas into DB structures utilizing Pyteomics readers.
-4. **`crosslinking-api`**: Exposes read access mapping `spectrum`, `peptides`, and `crosslinks` from PostgreSQL natively to the visualization engine without polling EBI.
-5. **`mzidentml-reader`**: Python processor tasked with ripping heavy `.mzIdentML` trees gracefully into normalized DB rows.
-6. **`postgresql-service`**: Highly available data-layer housing your crosslinking datasets cleanly.
-
-## Architecture Notes
-The xiVIEW suite leverages highly specialized ingress mappings to effectively emulate legacy EBI endpoints natively across internal cluster DNS routing. Static frontend nodes scale perfectly without requiring manual HTTP redirects inside source code!
-
-## Creating Custom Docker Containers
-The Helm chart defaults to pulling edge-images directly from the `rappsilberlab` docker-hub repositories natively. If you compile fresh custom source-code artifacts locally:
-```bash
-docker build -t rappsilberlab/xiview-frontend:custom -f Dockerfile.xiview-frontend .
-```
-*(You can effortlessly point the Helm chart to your custom `:custom` tags dynamically by just modifying the `.Values.xiviewFrontend.image.tag` inside your values file!)*
+4. **`crosslinking-api`**: Exposes read access mapping `spectrum`, `peptides`, and `crosslinks` from PostgreSQL to the visualization engine without polling EBI.
+5. **`mzidentml-reader`**: Python processor tasked with reading `.mzIdentML` trees into normalized DB rows.
+6. **`postgresql-service`**: Data-layer housing your crosslinking datasets.
