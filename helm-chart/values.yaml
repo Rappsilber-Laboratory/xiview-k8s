@@ -35,7 +35,7 @@ xiviewFrontend:
     registry: ""
     repository: "rappsilberlab"
     name: "xiview-frontend"
-    tag: "latest"
+    tag: "2026-04-15"
     pullPolicy: IfNotPresent
   pullSecrets: []
   
@@ -55,7 +55,7 @@ xiviewServer:
     registry: ""
     repository: "rappsilberlab"
     name: "xiview-server"
-    tag: "latest"
+    tag: "2026-04-15"
     pullPolicy: IfNotPresent
   pullSecrets: []
   
@@ -75,7 +75,7 @@ crosslinkingApi:
     registry: ""
     repository: "rappsilberlab"
     name: "crosslinking-api"
-    tag: "latest"
+    tag: "2026-04-15"
     pullPolicy: IfNotPresent
   pullSecrets: []
   
@@ -95,7 +95,7 @@ xiviewUploadApi:
     registry: ""
     repository: "rappsilberlab"
     name: "xiview-upload-api"
-    tag: "latest"
+    tag: "2026-04-15"
     pullPolicy: IfNotPresent
   pullSecrets: []
   
@@ -114,7 +114,7 @@ mzidentmlReader:
     registry: ""
     repository: "rappsilberlab"
     name: "mzidentml-reader"
-    tag: "latest"
+    tag: "2026-04-15"
     pullPolicy: IfNotPresent
   pullSecrets: []
   resources: {}
@@ -175,7 +175,7 @@ cacheProxy:
     registry: ""
     repository: "rappsilberlab"
     name: "cache-proxy"
-    tag: "latest"
+    tag: "2026-04-15"
     pullPolicy: IfNotPresent
   pullSecrets: []
   ttl: 0
