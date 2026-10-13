@@ -341,6 +341,11 @@ h4 {
   background: #dbeafe;
 }
 
+.action-btn.download:hover {
+  color: #059669;
+  background: #d1fae5;
+}
+
 .action-btn.delete:hover {
   color: var(--danger-color);
   background: #fee2e2;

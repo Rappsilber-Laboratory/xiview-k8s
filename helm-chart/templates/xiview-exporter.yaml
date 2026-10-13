@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: xiview-exporter
+  labels:
+    app: xiview-exporter
+spec:
+  replicas: {{ .Values.xiviewExporter.replicaCount | default 1 }}
+  selector:
+    matchLabels:
+      app: xiview-exporter
+  template:
+    metadata:
+      labels:
+        app: xiview-exporter
+    spec:
+      {{- with .Values.xiviewExporter.pullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+        {{- if .Values.localDev }}
+        - name: host-exporter-code
+          hostPath:
+            path: {{ .Values.localDevPath }}/xiview-exporter
+            type: Directory
+        - name: host-static-assets
+          hostPath:
+            path: {{ .Values.localDevPath }}/xiview-server/static
+            type: Directory
+        - name: host-upload-temp
+          hostPath:
+            path: {{ .Values.localDevPath }}/upload_temp
+            type: Directory
+        - name: host-workspace
+          hostPath:
+            path: {{ .Values.localDevPath }}
+            type: Directory
+        {{- end }}
+      {{- with .Values.xiviewExporter.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.xiviewExporter.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.xiviewExporter.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: xiview-exporter
+          image: "{{ if .Values.xiviewExporter.image.registry }}{{ .Values.xiviewExporter.image.registry }}/{{ end }}{{ if .Values.xiviewExporter.image.repository }}{{ .Values.xiviewExporter.image.repository }}/{{ end }}{{ .Values.xiviewExporter.image.name }}:{{ .Values.xiviewExporter.image.tag }}"
+          imagePullPolicy: {{ .Values.xiviewExporter.image.pullPolicy }}
+          {{- if .Values.localDev }}
+          workingDir: /home/appuser/exporter
+          command: ["python", "main.py"]
+          {{- end }}
+          resources:
+            {{- toYaml .Values.xiviewExporter.resources | nindent 12 }}
+          ports:
+            - containerPort: 8092
+          volumeMounts:
+            {{- if .Values.localDev }}
+            - name: host-exporter-code
+              mountPath: /home/appuser/exporter
+            - name: host-static-assets
+              mountPath: /home/appuser/static
+            - name: host-upload-temp
+              mountPath: /home/appuser/mzId_upload_temp
+            - name: host-workspace
+              mountPath: /home/default/workspaces/misc/xiview-k8s
+            {{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: xiview-exporter-service
+spec:
+  selector:
+    app: xiview-exporter
+  ports:
+    - protocol: TCP
+      port: 8092
+      targetPort: 8092
+  type: {{ .Values.xiviewExporter.service.type | default "ClusterIP" }}

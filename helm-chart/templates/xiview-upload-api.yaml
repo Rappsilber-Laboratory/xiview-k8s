@@ -25,6 +25,20 @@ spec:
             items:
               - key: config.ini
                 path: database.ini
+        {{- if .Values.localDev }}
+        - name: host-upload-main
+          hostPath:
+            path: {{ .Values.localDevPath }}/xiview-upload-api/main.py
+            type: File
+        - name: host-upload-temp
+          hostPath:
+            path: {{ .Values.localDevPath }}/upload_temp
+            type: Directory
+        - name: host-workspace
+          hostPath:
+            path: {{ .Values.localDevPath }}
+            type: Directory
+        {{- end }}
       {{- with .Values.xiviewUploadApi.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -53,6 +67,14 @@ spec:
               mountPath: /home/appuser/database.ini
               subPath: database.ini
               readOnly: true
+            {{- if .Values.localDev }}
+            - name: host-upload-main
+              mountPath: /home/appuser/main.py
+            - name: host-upload-temp
+              mountPath: /home/appuser/mzId_upload_temp
+            - name: host-workspace
+              mountPath: /home/default/workspaces/misc/xiview-k8s
+            {{- end }}
 ---
 apiVersion: v1
 kind: Service

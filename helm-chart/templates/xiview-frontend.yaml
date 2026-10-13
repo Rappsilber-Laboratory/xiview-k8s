@@ -28,6 +28,16 @@ spec:
         - name: frontend-config
           configMap:
             name: xiview-frontend-config
+        {{- if .Values.localDev }}
+        - name: host-frontend-assets
+          hostPath:
+            path: {{ .Values.localDevPath }}/xiview-frontend/dist/assets
+            type: Directory
+        - name: host-frontend-index
+          hostPath:
+            path: {{ .Values.localDevPath }}/xiview-frontend/dist/index.html
+            type: File
+        {{- end }}
       {{- with .Values.xiviewFrontend.pullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
@@ -57,6 +67,12 @@ spec:
               mountPath: /usr/share/nginx/html/config.js
               subPath: config.js
               readOnly: true
+            {{- if .Values.localDev }}
+            - name: host-frontend-assets
+              mountPath: /usr/share/nginx/html/assets
+            - name: host-frontend-index
+              mountPath: /usr/share/nginx/html/index.html
+            {{- end }}
 ---
 apiVersion: v1
 kind: Service

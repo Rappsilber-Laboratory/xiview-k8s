@@ -109,6 +109,24 @@ xiviewUploadApi:
   affinity: {}
   podAnnotations: {}
 
+xiviewExporter:
+  replicaCount: 1
+  image:
+    registry: ""
+    repository: "rappsilberlab"
+    name: "xiview-upload-api"
+    tag: "latest"
+    pullPolicy: IfNotPresent
+  pullSecrets: []
+  service:
+    type: ClusterIP
+    port: 8092
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  podAnnotations: {}
+
 mzidentmlReader:
   image:
     registry: ""

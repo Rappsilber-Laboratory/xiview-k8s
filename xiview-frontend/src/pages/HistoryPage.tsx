@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Eye, Trash2, Database } from 'lucide-react';
+import { Eye, Trash2, Database, Download, Loader2 } from 'lucide-react';
 
 export default function HistoryPage() {
   const [datasets, setDatasets] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
 
   const fetchDatasets = async () => {
     setLoading(true);
@@ -37,6 +38,37 @@ export default function HistoryPage() {
       }
     } catch (e) {
       console.error(e);
+    }
+  };
+
+  const handleDownloadStatic = async (id: string, name: string) => {
+    setDownloadingId(id);
+    try {
+      const res = await fetch(`/pride/ws/archive/crosslinking/v3/export_static_project?project_id=${id}`);
+      if (!res.ok) {
+        let errMsg = 'Failed to generate static export';
+        try {
+          const errJson = await res.json();
+          errMsg = errJson.detail || errMsg;
+        } catch {}
+        alert(`Export error: ${errMsg}`);
+        return;
+      }
+      const blob = await res.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = downloadUrl;
+      const cleanName = (name || id).replace(/\.[^/.]+$/, "");
+      a.download = `${cleanName}_static_xiview.zip`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(downloadUrl);
+      a.remove();
+    } catch (err: any) {
+      console.error(err);
+      alert(`Download failed: ${err.message || err}`);
+    } finally {
+      setDownloadingId(null);
     }
   };
 
@@ -95,6 +127,15 @@ export default function HistoryPage() {
                       >
                         <Eye size={18} />
                       </a>
+                      <button 
+                        className="action-btn download" 
+                        title="Download Self-Contained Static Package (.zip with layouts)" 
+                        disabled={downloadingId === ds.id}
+                        onClick={() => handleDownloadStatic(ds.id, ds.name)}
+                        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                      >
+                        {downloadingId === ds.id ? <Loader2 size={18} className="animate-spin" /> : <Download size={18} />}
+                      </button>
                       <button className="action-btn delete" title="Delete Dataset" onClick={(e) => handleDelete(ds.id, e)}>
                         <Trash2 size={18} />
                       </button>

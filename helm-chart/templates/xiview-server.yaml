@@ -38,6 +38,12 @@ spec:
             items:
               - key: database.ini
                 path: database.ini
+        {{- if .Values.localDev }}
+        - name: host-server-static
+          hostPath:
+            path: {{ .Values.localDevPath }}/xiview-server/static
+            type: Directory
+        {{- end }}
       {{- with .Values.xiviewServer.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -66,6 +72,10 @@ spec:
               mountPath: /home/appuser/database.ini
               subPath: database.ini
               readOnly: true
+            {{- if .Values.localDev }}
+            - name: host-server-static
+              mountPath: /home/appuser/static
+            {{- end }}
 ---
 apiVersion: v1
 kind: Service

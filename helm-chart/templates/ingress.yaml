@@ -102,6 +102,27 @@ spec:
                 name: xiview-upload-api-service
                 port:
                   number: 8090
+          - path: /pride/ws/archive/crosslinking/v3/export_static_project
+            pathType: Exact
+            backend:
+              service:
+                name: xiview-exporter-service
+                port:
+                  number: 8092
+          - path: /pride/ws/archive/crosslinking/v3/export_static
+            pathType: Exact
+            backend:
+              service:
+                name: xiview-exporter-service
+                port:
+                  number: 8092
+          - path: /pride/ws/archive/crosslinking/v3/layout
+            pathType: Prefix
+            backend:
+              service:
+                name: xiview-upload-api-service
+                port:
+                  number: 8090
           - path: /pride
             pathType: Prefix
             backend:

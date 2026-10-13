@@ -1,10 +1,11 @@
+import json
 import os
 import shutil
 import uuid
 import logging
-from typing import List
+from typing import List, Optional
 
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI, UploadFile, File, Request, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
@@ -53,5 +54,41 @@ def upload_local(files: List[UploadFile] = File(...)):
     
     return {"message": "Success", "project_id": project_identifier}
 
+
+@app.post("/pride/ws/archive/crosslinking/v3/layout/{project_id}")
+async def save_layout(project_id: str, request: Request):
+    """
+    Saves a layout (protein coordinates and groupings) for a given project.
+    """
+    temp_dir = os.path.expanduser('~/mzId_upload_temp')
+    local_dir = os.path.join(temp_dir, project_id)
+    os.makedirs(local_dir, exist_ok=True)
+    layout_file = os.path.join(local_dir, "layout.json")
+
+    try:
+        body = await request.json()
+        with open(layout_file, "w", encoding="utf-8") as f:
+            json.dump(body, f, indent=2)
+        logger.info("Saved layout for project %s", project_id)
+        return {"message": "Layout saved successfully", "project_id": project_id}
+    except Exception as e:
+        logger.error("Error saving layout: %s", e)
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/pride/ws/archive/crosslinking/v3/layout/{project_id}")
+def get_layout(project_id: str):
+    """
+    Retrieves the saved layout for a project.
+    """
+    temp_dir = os.path.expanduser('~/mzId_upload_temp')
+    layout_file = os.path.join(temp_dir, project_id, "layout.json")
+    if os.path.isfile(layout_file):
+        with open(layout_file, "r", encoding="utf-8") as f:
+            return json.load(f)
+    return {}
+
+
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8090)
+

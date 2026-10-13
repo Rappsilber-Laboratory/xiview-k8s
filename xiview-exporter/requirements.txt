@@ -1,0 +1,9 @@
+fastapi>=0.100.0
+uvicorn>=0.22.0
+python-multipart>=0.0.6
+pyteomics>=4.6
+lxml>=4.9.0
+sqlalchemy>=2.0.0
+sqlalchemy-utils
+numpy
+pandas
