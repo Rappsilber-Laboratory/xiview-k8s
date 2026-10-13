@@ -12,6 +12,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY xiview-exporter/exporter.py .
 COPY xiview-exporter/main.py .
+COPY mzidentml-reader/parser/ /home/appuser/parser/
 
 RUN mkdir -p /home/appuser/static /home/appuser/mzId_upload_temp
 COPY xiview-server/static/ /home/appuser/static/
